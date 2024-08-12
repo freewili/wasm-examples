@@ -1,0 +1,7 @@
+[build]
+target = "wasm32-wasip1"
+
+
+[target.wasm32-wasip1]
+rustflags = ["-C", "link-arg=-zstack-size=65520",]
+runner = "fwi-serial -w -s "
