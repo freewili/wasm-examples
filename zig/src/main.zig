@@ -8,7 +8,7 @@ extern "wiliwasm" fn setled(on: c_int) void;
 extern "wiliwasm" fn waitms(ms: c_int) void;
 extern "wiliwasm" fn i2cRead(address: c_int, register: c_int, bytes: *c_char, length: c_int) c_int;
 extern "wiliwasm" fn i2cWrite(address: c_int, register: c_int, bytes: *c_char, length: c_int) c_int;
-extern "wiliwasm" fn addPanel(iPanelIndex: c_int, iVisible: c_int, iVisible: c_int, iUseTile: c_int, iTileID: c_int, iR: u8, iG: u8, iB: u8, iShowMenu: c_int) void;
+extern "wiliwasm" fn addPanel(iPanelIndex: c_int, iVisible: c_int, iInRotation: c_int, iUseTile: c_int, iTileID: c_int, iR: u8, iG: u8, iB: u8, iShowMenu: c_int) void;
 extern "wiliwasm" fn addControlPictureFromFile(iPanelIndex: c_int, iControlIndex: c_int, iX: c_int, iY: c_int, szPicture: [*c]const u8, iVisible: c_int) void;
 extern "wiliwasm" fn showPanel(iPanel: c_int) void;
 extern "wiliwasm" fn setBoardLED(iLEDIndex0_7: c_uint, iR: c_int, iG: c_int, iB: c_int, iDurationMs: c_int, iMode: c_int) void;
