@@ -4,4 +4,4 @@ target = "wasm32-wasip1"
 
 [target.wasm32-wasip1]
 rustflags = ["-C", "link-arg=-zstack-size=65520",]
-runner = "fwi-serial -mi 1 -fn /scripts/pip_boy.wasm -w pip_boy.wasm -s "
+runner = "C:\\dev\\.venv-310\\Scripts\\fwi-serial.cmd -mi 1 -fn /scripts/radio.wasm -w radio.wasm -s "
