@@ -14,3 +14,5 @@ strip = true
 
 [dependencies]
 
+# [lib]
+# crate-type = ["cdylib"]

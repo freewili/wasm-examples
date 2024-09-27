@@ -2,7 +2,6 @@
 #![no_main]
 
 use core::ffi::c_int;
-use core::mem::MaybeUninit;
 use core::panic::PanicInfo;
 
 mod fwwasm;
@@ -47,20 +46,6 @@ const GRAY: Color = Color {
 
 const NUM_LEDS: u32 = 7;
 
-/*
-    pub fn addControlText(
-        iPanelIndex: ::core::ffi::c_int,
-        iControlIndex: ::core::ffi::c_int,
-        iX: ::core::ffi::c_int,
-        iY: ::core::ffi::c_int,
-        iFontType: ::core::ffi::c_int,
-        iFontSize: ::core::ffi::c_int,
-        iR: ::core::ffi::c_int,
-        iG: ::core::ffi::c_int,
-        iB: ::core::ffi::c_int,
-        szText: *const ::core::ffi::c_char,
-    );
-     */
 fn display_image() {
     // Create a panel to display the image
     unsafe {
@@ -186,8 +171,8 @@ pub extern "C" fn main() -> c_int {
             if (hasEvent()) == 0 {
                 continue;
             }
-            let mut event_data = MaybeUninit::<[u8; FW_GET_EVENT_DATA_MAX as usize]>::uninit();
-            let mut event_data = *event_data.as_mut_ptr();
+            
+            let mut event_data = [0; FW_GET_EVENT_DATA_MAX as usize];
             let last_event = getEventData(event_data.as_mut_ptr());
             printInt(
                 c"Event: %d...\n".as_ptr(),
@@ -196,6 +181,7 @@ pub extern "C" fn main() -> c_int {
                 last_event as i32,
             );
             let (color, fname) = if last_event == FWGuiEventType::FWGUI_EVENT_GRAY_BUTTON as i32 {
+                //showPanel(1);
                 (&GRAY, c"/radio/rainbow.sub")
             } else if last_event == FWGuiEventType::FWGUI_EVENT_YELLOW_BUTTON as i32 {
                 (&YELLOW, c"/radio/yellow.sub")

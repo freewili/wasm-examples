@@ -1,7 +1,7 @@
 [build]
-target = "wasm32-wasip1"
+target = "wasm32-unknown-unknown"
 
 
-[target.wasm32-wasip1]
+[target.wasm32-unknown-unknown]
 rustflags = ["-C", "link-arg=-zstack-size=65520",]
-runner = "C:\\dev\\.venv-310\\Scripts\\fwi-serial.cmd -mi 1 -fn /scripts/radio.wasm -w radio.wasm -s "
+runner = "fwi-serial.cmd -mi 1 -fn /scripts/radio.wasm -w radio.wasm -s "
