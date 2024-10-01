@@ -1,0 +1,3 @@
+[submodule "fwwasm"]
+	path = fwwasm
+	url = git@github.com:freewili/fwwasm.git
