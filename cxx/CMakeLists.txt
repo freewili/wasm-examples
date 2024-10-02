@@ -13,7 +13,7 @@ set(triple wasm32)
 add_library(${CMAKE_PROJECT_NAME} INTERFACE)
 
 # Include fwwasm header
-add_subdirectory(../../fwwasm fwwasm)
+add_subdirectory(../fwwasm fwwasm)
 target_link_libraries(${PROJECT_NAME} INTERFACE fwwasm)
 
 # Enable safety checks
@@ -31,3 +31,4 @@ add_link_options(-s -Wl,--no-entry -Wl,--export-all -sERROR_ON_UNDEFINED_SYMBOLS
 # Add all the examples below
 add_subdirectory(src/radio)
 add_subdirectory(src/simple_led)
+add_subdirectory(src/rainbow_leds)
