@@ -1,6 +1,6 @@
-# C++ WASM PIP Boy example
+# C++ WASM Example
 
-Example C++ FreeWili WASM application that shows an image on the screen.
+Example C++ FreeWili WASM application that exercises the API.
 
 ## Environment setup
 
@@ -19,12 +19,21 @@ Example C++ FreeWili WASM application that shows an image on the screen.
         Thread model: posix
         InstalledDir: C:\dev\emsdk\upstream\bin
         ```
-    - vscode expects an environment variable EMSDK_PATH set to emsdk directory
-- Build:
-  ```bash
-  $ emcmake cmake -B build
-  $ cmake --build build
-  ```
+  - Building:
+    - command line:
+      ```bash
+      $ emcmake cmake -B build
+      $ cmake --build build
+      ```
+    - vscode:
+      - vscode expects an environment variable `EMSDK_PATH` set to emsdk directory. This will allow vscode to build the project.
+        - Linux:
+          - `EMSDK_PATH=$(dirname $(which emcc)) code`
+        - Windows:
+          - TODO
+        - Mac OSX:
+          - TODO
+  
 
 ## Upload to Free-Wili
 - Install [Python](https://www.python.org/)
@@ -33,8 +42,8 @@ Example C++ FreeWili WASM application that shows an image on the screen.
 - Send the fwi file to the display processor's images directory
   - `fwi-serial -di 1 -s ../../fwi/pip_boy.fwi -fn /images/pip_boy.fwi`
 - Send WASM file to the Free-Wili:
-  - `fwi-serial -mi 1 -s build/pip_boy.wasm -fn /scripts/pip_boy.wasm`
+  - `fwi-serial -mi 1 -s build/cxx_demo.wasm -fn /scripts/cxx_demo.wasm`
 - Run the WASM file
-  - `fwi-serial -mi 1 -w pip_boy.wasm`
+  - `fwi-serial -mi 1 -w cxx_demo.wasm`
 - Send and Run at the same time:
-  - `fwi-serial -mi 1 -s build/pip_boy.wasm -fn /scripts/pip_boy.wasm -w pip_boy.wasm`
+  - `fwi-serial -mi 1 -s build/cxx_demo.wasm -fn /scripts/cxx_demo.wasm -w cxx_demo.wasm`
