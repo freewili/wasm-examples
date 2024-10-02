@@ -43,12 +43,10 @@ constexpr std::array Panels{
     PanelInfo{5, FWGuiEventType::FWGUI_EVENT_RED_BUTTON, RED, "RED", "/radio/red.sub"},
 };
 
-constexpr std::array Buttons {
-        FWGuiEventType::FWGUI_EVENT_GRAY_BUTTON,
-		FWGuiEventType::FWGUI_EVENT_YELLOW_BUTTON,
-		FWGuiEventType::FWGUI_EVENT_GREEN_BUTTON,
-		FWGuiEventType::FWGUI_EVENT_BLUE_BUTTON,
-		FWGuiEventType::FWGUI_EVENT_RED_BUTTON,
+constexpr std::array Buttons{
+    FWGuiEventType::FWGUI_EVENT_GRAY_BUTTON,  FWGuiEventType::FWGUI_EVENT_YELLOW_BUTTON,
+    FWGuiEventType::FWGUI_EVENT_GREEN_BUTTON, FWGuiEventType::FWGUI_EVENT_BLUE_BUTTON,
+    FWGuiEventType::FWGUI_EVENT_RED_BUTTON,
 };
 
 auto setup_panels() -> void {
@@ -120,7 +118,8 @@ auto process_events() -> void {
         }
         // we need an exit condition
         if (last_event == FWGuiEventType::FWGUI_EVENT_RED_BUTTON) {
-            printInt("\nLast event was red button: %d\n", printOutColor::printColorNormal, printOutDataType::printUInt32, red_count);
+            printInt("\nLast event was red button: %d\n", printOutColor::printColorNormal,
+                     printOutDataType::printUInt32, red_count);
             red_count += 1;
             if (red_count >= 3) {
                 RadioTxSubFile(1, "/radio/off.sub");
