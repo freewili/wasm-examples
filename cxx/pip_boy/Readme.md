@@ -28,11 +28,13 @@ Example C++ FreeWili WASM application that exercises the API.
     - vscode:
       - vscode expects an environment variable `EMSDK_PATH` set to emsdk directory. This will allow vscode to build the project.
         - Linux:
-          - `EMSDK_PATH=$(dirname $(which emcc)) code`
-        - Windows:
-          - TODO
+          - `EMSDK_PATH=$(dirname $(which emcc)) code .`
+        - Windows (Powershell):
+          - `$env:EMSDK_PATH=(Split-Path (Get-Command emcc).Path); code .`
         - Mac OSX:
           - TODO
+      - Select Debug or Release build:
+        - Open the command pallete (ctrl+shift+p) and enter `>CMake: Select Build Preset`. Select `Debug` or `Release`
   
 
 ## Upload to Free-Wili
