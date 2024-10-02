@@ -19,4 +19,4 @@ add_executable(pip_boy src/main.cpp)
 include_directories(include)
 
 add_subdirectory(../../fwwasm fwwasm)
-target_link_libraries(pip_boy fwwasm)
+target_link_libraries(${CMAKE_PROJECT_NAME} fwwasm)
