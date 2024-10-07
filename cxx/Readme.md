@@ -4,37 +4,28 @@ Example C++ FreeWili WASM application that exercises the API.
 
 ## Environment setup
 
-- Install [emscripten](https://emscripten.org/docs/getting_started/downloads.html)
-  - Quick start (read the actual documentation for more in depth information)
-    - `git clone https://github.com/emscripten-core/emsdk.git`
-    - `cd emsdk`
-    - `./emsdk install latest`
-    - `./emsdk activate latest`
-    - Check emcc exists and version:
-        ```
-        emcc -v
-        emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.68 (ceee49d2ecdab36a3feb85a684f8e5a453dde910)
-        clang version 20.0.0git (https:/github.com/llvm/llvm-project 5cc64bf60bc04b9315de3c679eb753de4d554a8a)
-        Target: wasm32-unknown-emscripten
-        Thread model: posix
-        InstalledDir: C:\dev\emsdk\upstream\bin
-        ```
-  - Building:
-    - command line:
-      ```bash
-      $ emcmake cmake -B build
-      $ cmake --build build
-      ```
-    - vscode:
-      - vscode expects an environment variable `EMSDK_PATH` set to emsdk directory. This will allow vscode to build the project.
-        - Linux:
-          - `EMSDK_PATH=$(dirname $(which emcc)) code .`
-        - Windows (Powershell):
-          - `$env:EMSDK_PATH=(Split-Path (Get-Command emcc).Path); code .`
-        - Mac OSX:
-          - TODO
-      - Select Debug or Release build:
-        - Open the command pallete (ctrl+shift+p) and enter `>CMake: Select Build Preset`. Select `Debug` or `Release`
+- Install [WASI-SDK](https://github.com/WebAssembly/wasi-sdk/releases)
+- Set `WASI_SDK_PATH` environment variable
+- Building:
+  - command line:
+    ```bash
+    $ cmake -DCMAKE_TOOLCHAIN_FILE=${WASI_SDK_PATH}/share/cmake/wasi-sdk.cmake -B build . && cmake --build build
+    ```
+  - Visual Studio Code:
+    - vscode expects an environment variable `WASI_SDK_PATH` set to emsdk directory. This will allow vscode to build the project.
+      - Linux:
+        - `WASI_SDK_PATH=/opt/wasi-sdk-24.0-x86_64-linux code .`
+      - Windows (Powershell):
+        - `$env:WASI_SDK_PATH="C:\Path\To\wasi-sdk"; code .`
+      - Mac OSX:
+        - TODO
+    - cmake expects to be able to find `${env:WASI_SDK_PATH}/share/cmake/wasi-sdk.cmake`
+      - Inside the [VSCode command Palette](https://code.visualstudio.com/api/ux-guidelines/command-palette) run the following commands:
+        - `>CMake: Select Variant` and select `MinSizeRel`
+        - `>CMake: Configure`
+        - `>CMake: Build Target`
+        - `>CMake: Select A Kit`
+          - Make sure the kit is unspecified.
   
 
 ## Upload to Free-Wili
@@ -43,9 +34,10 @@ Example C++ FreeWili WASM application that exercises the API.
   - `pip install freewili`
 - Send the fwi file to the display processor's images directory
   - `fwi-serial -di 1 -s ../../fwi/pip_boy.fwi -fn /images/pip_boy.fwi`
+  - *Note:* Not Required for all
 - Send WASM file to the Free-Wili:
-  - `fwi-serial -mi 1 -s build/cxx_demo.wasm -fn /scripts/cxx_demo.wasm`
+  - `fwi-serial -mi 1 -s build/examples/project_name/project_name.wasm -fn /scripts/project_name.wasm`
 - Run the WASM file
-  - `fwi-serial -mi 1 -w cxx_demo.wasm`
+  - `fwi-serial -mi 1 -w project_name.wasm`
 - Send and Run at the same time:
-  - `fwi-serial -mi 1 -s build/cxx_demo.wasm -fn /scripts/cxx_demo.wasm -w cxx_demo.wasm`
+  - `fwi-serial -mi 1 -s build/examples/project_name/project_name.wasm -fn /scripts/project_name.wasm -w project_name.wasm`

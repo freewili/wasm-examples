@@ -1,19 +1,5 @@
 {
     "cmake.configureArgs": [
-        "-DCMAKE_TOOLCHAIN_FILE=${env:EMSDK_PATH}/cmake/Modules/Platform/Emscripten.cmake"
-    ],
-    "files.associations": {
-        "__threading_support": "cpp",
-        "array": "cpp",
-        "iterator": "cpp",
-        "initializer_list": "cpp",
-        "iosfwd": "cpp",
-        "limits": "cpp",
-        "new": "cpp",
-        "optional": "cpp",
-        "ratio": "cpp",
-        "tuple": "cpp",
-        "typeinfo": "cpp",
-        "ranges": "cpp"
-    },
+        "-DCMAKE_TOOLCHAIN_FILE=${env:WASI_SDK_PATH}/share/cmake/wasi-sdk.cmake"
+    ]
 }
