@@ -12,7 +12,7 @@ Example C++ FreeWili WASM application that exercises the API.
     $ cmake -DCMAKE_TOOLCHAIN_FILE=${WASI_SDK_PATH}/share/cmake/wasi-sdk.cmake -B build . && cmake --build build
     ```
   - Visual Studio Code:
-    - vscode expects an environment variable `WASI_SDK_PATH` set to emsdk directory. This will allow vscode to build the project.
+    - vscode expects an environment variable `WASI_SDK_PATH` set to the WASI-SDK directory. This will allow vscode to build the project.
       - Linux:
         - `WASI_SDK_PATH=/opt/wasi-sdk-24.0-x86_64-linux code .`
       - Windows (Powershell):
