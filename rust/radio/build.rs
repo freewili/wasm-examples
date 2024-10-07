@@ -1,30 +1,30 @@
 // bindgen.exe ..\cxx\include\fwwasm.h -o src\fwwasm.rs --wasm-import-module-name=wiliwasm --use-core --raw-line "#![allow(non_upper_case_globals, unused, dead_code)]"
 // bindgen ../cxx/include/fwwasm.h -o src/fwwasm.rs --wasm-import-module-name=wiliwasm --use-core --raw-line '#![allow(non_upper_case_globals, unused, dead_code)]'
-//use std::{env, path::PathBuf};
+use std::{env, path::PathBuf};
 
 fn main() {
-    //todo!();
+    let cargo_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
+    let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
+    let out_full_path = out_path.join("fwwasm.rs");
+    println!("cargo:rerun-if-changed={}../../fwwasm/include/fwwasm.h", cargo_dir.to_str().unwrap());
+    println!("cargo:rerun-if-changed={}/build.rs", cargo_dir.to_str().unwrap());
 
-    // let cargo_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-    // let output_rs_file = cargo_dir.join("src").join("fwwasm.rs");
-    // println!("cargo:rerun-if-changed={}../cxx/include/fwwasm.h", cargo_dir.to_str().unwrap());
-    // println!("cargo:rerun-if-changed={}/build.rs", cargo_dir.to_str().unwrap());
-
-    // // Generate bindings
-    // let bindings = bindgen::Builder::default()
-    //     .header("../cxx/include/fwwasm.h")
-    //     //.allowlist_function("setIO")
-    //     //.derive_default(true)
-    //     //.derive_debug(true)
-    //     //.parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
-    //     //.wasm_import_module_name("wiliwasm")
-    //     //.use_core()
-    //     //.raw_line("#![allow(non_upper_case_globals, unused, dead_code, non_camel_case_types)]")
-    //     .generate()
-    //     .expect("Unable to generate bindings");
+    // Generate bindings
+    let bindings = bindgen::Builder::default()
+        .header("../../fwwasm/include/fwwasm.h")
+        .wasm_import_module_name("wiliwasm")
+        .use_core()
+        .default_enum_style(bindgen::EnumVariation::Rust { non_exhaustive: true })
+        //.raw_line("#![allow(non_upper_case_globals, unused, dead_code, non_camel_case_types)]")
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
+        .clang_arg("-fvisibility=default") // https://github.com/rust-lang/rust-bindgen/issues/1941
+        .generate()
+        .expect("Unable to generate bindings");
     
-    // bindings
-    //     .write_to_file(&output_rs_file)
-    //     .expect("Couldn't write bindings!");
-    // println!("cargo:warning={}", output_rs_file.to_str().unwrap());
+    // Write the bindings to the $OUT_DIR/bindings.rs file.
+    
+    bindings
+        .write_to_file(&out_full_path)
+        .expect("Couldn't write bindings!");
+    println!("cargo:warning={}", out_full_path.to_str().unwrap());
 }

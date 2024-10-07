@@ -1,13 +1,8 @@
-#![no_std]
 #![no_main]
-
-use core::ffi::c_int;
-use core::panic::PanicInfo;
-
-mod fwwasm;
-use fwwasm::{
-    addControlPictureFromFile, addControlText, addPanel, exitToMainAppMenu, getEventData, hasEvent, playSoundFromNameOrID, printInt, printOutColor, printOutDataType, setBoardLED, showPanel, waitms, FWGuiEventType, LEDManagerLEDMode, RadioSetIdle, RadioSetTx, RadioTxSubFile, FW_GET_EVENT_DATA_MAX
-};
+#![allow(non_upper_case_globals)]
+#![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
+include!(concat!(env!("OUT_DIR"), "/fwwasm.rs"));
 
 struct Color {
     red: u8,
@@ -66,7 +61,18 @@ fn display_image() {
             GRAY.blue as i32,
             0,
         );
-        addControlText(1, 0, 10, 50, 2, 64, 255, 255, 255, c"Transmitting\nRainbow...".as_ptr());
+        addControlText(
+            1,
+            0,
+            10,
+            50,
+            2,
+            64,
+            255,
+            255,
+            255,
+            c"Transmitting\nRainbow...".as_ptr(),
+        );
         addPanel(
             2,
             1,
@@ -122,17 +128,18 @@ fn display_image() {
 }
 
 #[no_mangle]
-pub extern "C" fn main() -> c_int {
+pub extern "C" fn main() -> () {
+    println!("Hello, World!");
+
     display_image();
-    
 
     unsafe {
         playSoundFromNameOrID(core::ptr::null(), 77);
 
         printInt(
             c"Hello, World %d!\n".as_ptr(),
-            printOutColor::printColorNormal as u32,
-            printOutDataType::printUInt32 as u32,
+            printOutColor::printColorNormal,
+            printOutDataType::printUInt32,
             0 as i32,
         );
     };
@@ -151,7 +158,7 @@ pub extern "C" fn main() -> c_int {
                 startup_color.green.into(),
                 startup_color.blue.into(),
                 300,
-                LEDManagerLEDMode::ledsimplevalue as u32,
+                LEDManagerLEDMode::ledsimplevalue,
             )
         };
     }
@@ -159,8 +166,8 @@ pub extern "C" fn main() -> c_int {
     unsafe {
         printInt(
             c"Listening to events...\n".as_ptr(),
-            printOutColor::printColorNormal as u32,
-            printOutDataType::printUInt32 as u32,
+            printOutColor::printColorNormal,
+            printOutDataType::printUInt32,
             0 as i32,
         );
     };
@@ -171,13 +178,13 @@ pub extern "C" fn main() -> c_int {
             if (hasEvent()) == 0 {
                 continue;
             }
-            
+
             let mut event_data = [0; FW_GET_EVENT_DATA_MAX as usize];
             let last_event = getEventData(event_data.as_mut_ptr());
             printInt(
                 c"Event: %d...\n".as_ptr(),
-                printOutColor::printColorNormal as u32,
-                printOutDataType::printUInt32 as u32,
+                printOutColor::printColorNormal,
+                printOutDataType::printUInt32,
                 last_event as i32,
             );
             let (color, fname) = if last_event == FWGuiEventType::FWGUI_EVENT_GRAY_BUTTON as i32 {
@@ -215,21 +222,21 @@ pub extern "C" fn main() -> c_int {
                     color.green.into(),
                     color.blue.into(),
                     250,
-                    LEDManagerLEDMode::ledflashfade as u32,
+                    LEDManagerLEDMode::ledflashfade,
                 );
             }
             printInt(
                 fname.as_ptr(),
-                printOutColor::printColorNormal as u32,
-                printOutDataType::printUInt32 as u32,
+                printOutColor::printColorNormal,
+                printOutDataType::printUInt32,
                 last_event as i32,
             );
             RadioSetTx(1);
             let res = RadioTxSubFile(1, fname.as_ptr() as *mut core::ffi::c_char);
             printInt(
                 c"\nRadioTxSubFile: %d\n".as_ptr(),
-                printOutColor::printColorNormal as u32,
-                printOutDataType::printUInt32 as u32,
+                printOutColor::printColorNormal,
+                printOutDataType::printUInt32,
                 res as i32,
             );
             //waitms(1000);
@@ -241,7 +248,7 @@ pub extern "C" fn main() -> c_int {
                     color.green.into(),
                     color.blue.into(),
                     100,
-                    LEDManagerLEDMode::ledpulse as u32,
+                    LEDManagerLEDMode::ledpulse,
                 );
             }
             showPanel(0);
@@ -258,22 +265,20 @@ pub extern "C" fn main() -> c_int {
         };
     }
 
-    unsafe { 
+    unsafe {
         playSoundFromNameOrID(c"GoodJob".as_ptr(), -1);
-        exitToMainAppMenu() 
+        exitToMainAppMenu()
     };
-
-    0
 }
 
-#[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
-    loop {
-        unsafe {
-            //setled(1);
-            waitms(33);
-            //setled(0);
-            waitms(33);
-        };
-    }
-}
+// #[panic_handler]
+// fn panic(_info: &PanicInfo) -> ! {
+//     loop {
+//         unsafe {
+//             //setled(1);
+//             waitms(33);
+//             //setled(0);
+//             waitms(33);
+//         };
+//     }
+// }

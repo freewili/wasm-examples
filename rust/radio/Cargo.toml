@@ -12,7 +12,5 @@ codegen-units = 1
 panic = "abort"
 strip = true
 
-[dependencies]
-
-# [lib]
-# crate-type = ["cdylib"]
+[build-dependencies]
+bindgen = "0.69.4"
