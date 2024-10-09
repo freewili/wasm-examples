@@ -21,7 +21,17 @@ FetchContent_MakeAvailable(fwwasm)
 # Compiler and linker option variables
 set(NORMAL_COMPILER_ARGS -Wall -Werror -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wfloat-equal -Wold-style-cast)
 set(WASM_COMPILER_ARGS --target=wasm32-unknown-wasi -O3 -flto)
-set(WASM_LINKER_ARGS -Wl,--no-entry -Wl,--lto-O3 -Wl,-z,stack-size=102400)
+set(WASM_LINKER_ARGS
+    "-Wl,--no-entry" # Specify we don't need main exported
+    "-Wl,--export-all" # Export all symbols
+    "-Wl,--lto-O3"
+    "-Wl,-z,stack-size=61440" # leave a little bit for global and heap
+    "-Wl,--initial-heap=0" # Heap should just fill in remaining that is left. See __heap_base and __head_end exports.
+    "-Wl,--max-memory=65536" # Don't allow the memory to grow
+    "-Wl,--initial-memory=65536" # We only have 1 page (64KB) to work with on the Free-Wili
+    "-Wl,--stack-first" # Place the stack first so its easier to find stack overflow issues.
+    "-Wl,--strip-all" # Strip all debug symbols - wasm2wat is more useful without stripping.
+)
 
 # Compiler options
 target_compile_options(${PROJECT_NAME} INTERFACE ${NORMAL_COMPILER_ARGS} ${WASM_COMPILER_ARGS})
