@@ -1,4 +1,4 @@
-// tinygo build -o fw_go.wasm -target wasi -no-debug -panic=trap -scheduler=none -gc=leaking -opt=z main.go
+// tinygo build -target wasip1 -panic=trap -scheduler=none -gc=leaking -opt=z -stack-size=61440B -size=short -no-debug
 package main
 
 import "C"
@@ -16,7 +16,7 @@ func SetupPanels() {
 
 func main() {
 	SetupPanels()
-	
+
 	for _ = range 7 {
 		fwwasm.Waitms(100)
 
