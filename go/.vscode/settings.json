@@ -1,0 +1,8 @@
+{
+    "go.toolsEnvVars": {
+        "GOOS": "wasip1",
+        "GOARCH": "wasm",
+        //"GOROOT": "/home/user/.cache/tinygo/goroot-go1.14-f930d5b5f36579e8cbd1c139012b3d702281417fb6bdf67303c4697195b9ef1f-syscall",
+        "GOFLAGS": "-no-debug -panic=trap -scheduler=none -gc=leaking -opt=z"
+    }
+}
