@@ -17,10 +17,10 @@ func SetupPanels() {
 func main() {
 	SetupPanels()
 
-	for _ = range 7 {
+	for ledIndex := range 7 {
 		fwwasm.Waitms(100)
 
-		fwwasm.SetBoardLED(0, 
+		fwwasm.SetBoardLED(ledIndex, 
 			fwwasm.ColorRed().Red, 
 			fwwasm.ColorRed().Green, 
 			fwwasm.ColorRed().Blue, 
