@@ -126,12 +126,15 @@ func GetEventData(data *C.char) C.int
 //export addPanel
 func AddPanel(index C.int, visible C.int, in_rotation C.int, use_tile C.int, tile_id C.int, bg_red C.int, bg_green C.int, bg_blue C.int, show_menu C.int)
 
-// void addControlPicture(int index, int iControlIndex, int iX, int iY, int iPictureId, int visible)
+// void addControlPictureFromFile(int panel_index, int control_index, int x, int y, const char* file_name, int visible)
 //
 //go:wasm-module wiliwasm
 //export addControlPictureFromFile
-func AddControlPictureFromFile(index C.int, iControlIndex C.int, iX C.int, iY C.int, iPictureId C.int, visible C.int)
+func addControlPictureFromFile(panel_index C.int, control_index C.int, x C.int, y C.int, file_name *C.char, visible C.int)
 
+func AddControlPictureFromFile(panel_index int, control_index int, x int, y int, file_name string, visible int) {
+	addControlPictureFromFile(C.int(panel_index), C.int(control_index), C.int(x), C.int(y), C.CString(file_name), C.int(visible))
+}
 // void addControlText(int panel_index,
 //
 //	int control_index,
@@ -146,7 +149,11 @@ func AddControlPictureFromFile(index C.int, iControlIndex C.int, iX C.int, iY C.
 //
 //go:wasm-module wiliwasm
 //export addControlText
-func AddControlText(panel_index C.int, control_index C.int, x C.int, y C.int, font_type C.int, font_size C.int, red C.int, green C.int, blue C.int, text_value *C.char)
+func addControlText(panel_index C.int, control_index C.int, x C.int, y C.int, font_type C.int, font_size C.int, red C.int, green C.int, blue C.int, text_value *C.char)
+
+func AddControlText(panel_index int, control_index int, x int, y int, font_type int, font_size int, red int, green int, blue int, text_value string) {
+	addControlText(C.int(panel_index), C.int(control_index), C.int(x), C.int(y), C.int(font_type), C.int(font_size), C.int(red), C.int(green), C.int(blue), C.CString(text_value))
+}
 
 // void showPanel(int index) WASM_IMPORT("showPanel");
 //
