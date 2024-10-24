@@ -10,13 +10,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(${CMAKE_PROJECT_NAME} INTERFACE)
 
-# Include fwwasm header
-FetchContent_Declare(
-    fwwasm
-    GIT_REPOSITORY https://github.com/freewili/fwwasm.git
-    GIT_TAG db333d6
-)
-FetchContent_MakeAvailable(fwwasm)
+# Use FetchContent_Declare example, we have the submodule already so no need here. Left as an example.
+# # Include fwwasm header
+# FetchContent_Declare(
+#     fwwasm
+#     GIT_REPOSITORY https://github.com/freewili/fwwasm.git
+#     GIT_TAG 5ce1a060
+# )
+# FetchContent_MakeAvailable(fwwasm)
+
+add_subdirectory(../fwwasm fwwasm)
 
 # Compiler and linker option variables
 set(NORMAL_COMPILER_ARGS -Wall -Werror -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wfloat-equal -Wold-style-cast)
@@ -27,7 +30,7 @@ set(WASM_LINKER_ARGS
     "-Wl,--lto-O3"
     "-Wl,-z,stack-size=61440" # leave a little bit for global and heap
     "-Wl,--initial-heap=0" # Heap should just fill in remaining that is left. See __heap_base and __head_end exports.
-    "-Wl,--max-memory=65536" # Don't allow the memory to grow
+    "-Wl,--max-memory=131072" # Don't allow the memory to grow too much
     "-Wl,--initial-memory=65536" # We only have 1 page (64KB) to work with on the Free-Wili
     "-Wl,--stack-first" # Place the stack first so its easier to find stack overflow issues.
     "-Wl,--strip-all" # Strip all debug symbols - wasm2wat is more useful without stripping.
