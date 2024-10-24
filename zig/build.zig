@@ -8,7 +8,7 @@ pub fn build(b: *std.Build) void {
     // what target to build for. Here we do not override the defaults, which
     // means any target is allowed, and the default is native. Other options
     // for restricting supported target set are available.
-    const target = b.resolveTargetQuery(.{ .cpu_arch = .wasm32, .os_tag = .freestanding });
+    const target = b.resolveTargetQuery(.{ .cpu_arch = .wasm32, .os_tag = .wasi });
 
     const optimize = std.builtin.OptimizeMode.ReleaseSmall;
 
@@ -19,16 +19,17 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    exe.addIncludePath(b.path("../cxx/pip_boy/include/"));
+    exe.addIncludePath(b.path("../fwwasm/include"));
 
+    // Page size is 64KB and we are limited to 2 in Free-Wili
     const number_of_pages = 2;
 
-    exe.global_base = 6560;
+    exe.global_base = 1024;
     //exe.entry = .disabled;
-    exe.rdynamic = true;
-    //exe.import_memory = true;
+    exe.rdynamic = false;
+    exe.import_memory = false;
     exe.stack_size = std.wasm.page_size;
-    exe.initial_memory = std.wasm.page_size * number_of_pages;
+    exe.initial_memory = std.wasm.page_size * 2;
     exe.max_memory = std.wasm.page_size * number_of_pages;
 
     // This declares intent for the executable to be installed into the
