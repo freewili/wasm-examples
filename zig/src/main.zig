@@ -117,19 +117,19 @@ pub fn process_events() void {
         if (!found) {
             continue;
         }
-        // if (std.binary.search(Buttons, last_event) == -1) {
-        //     continue;
-        // }
         for (Panels) |panel| {
             if (panel.event_type == last_event) {
                 fw.printInt(@ptrCast("\nShowing Panel %d...\n"), fw.printColorNormal, fw.printUInt32, panel.index);
                 fw.showPanel(panel.index);
-                fw.waitms(250);
                 // If we match the event type, show the panel, flash leds and transmit the radio
                 for (0..NUMBER_OF_LEDS) |led_index| {
                     fw.setBoardLED(@intCast(led_index), panel.color.red, panel.color.green, panel.color.blue, 250, fw.ledpulse);
                 }
                 _ = fw.RadioTxSubFile(@intCast(1), @ptrCast(panel.sub_fname));
+                // Wait for the radio to stop transmitting
+                while (fw.RadioSubFileIsTransmitting() != 0) {
+                    fw.waitms(33);
+                }
                 // show the main panel
                 fw.showPanel(0);
                 break;
@@ -141,6 +141,10 @@ pub fn process_events() void {
             red_count += 1;
             if (red_count >= 3) {
                 _ = fw.RadioTxSubFile(1, @ptrCast("/radio/off.sub"));
+                // Wait for the radio to stop transmitting
+                while (fw.RadioSubFileIsTransmitting() != 0) {
+                    fw.waitms(33);
+                }
                 fw.exitToMainAppMenu();
                 break;
             }

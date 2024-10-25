@@ -111,6 +111,10 @@ auto process_events() -> void {
                                 LEDManagerLEDMode::ledpulse);
                 }
                 RadioTxSubFile(1, panel.sub_fname);
+                // Wait for the radio to stop transmitting
+                while (RadioSubFileIsTransmitting() != 0) {
+                    waitms(33);
+                }
                 // show the main panel
                 showPanel(0);
                 break;
@@ -123,6 +127,10 @@ auto process_events() -> void {
             red_count += 1;
             if (red_count >= 3) {
                 RadioTxSubFile(1, "/radio/off.sub");
+                // Wait for the radio to stop transmitting
+                while (RadioSubFileIsTransmitting() != 0) {
+                    waitms(33);
+                }
                 exitToMainAppMenu();
                 break;
             }
