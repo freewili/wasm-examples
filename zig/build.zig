@@ -13,7 +13,7 @@ pub fn build(b: *std.Build) void {
     const optimize = std.builtin.OptimizeMode.ReleaseSmall;
 
     const exe = b.addExecutable(.{
-        .name = "pip_boy",
+        .name = "zig_radio",
         .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
