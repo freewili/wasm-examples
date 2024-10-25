@@ -12,18 +12,18 @@ const Color = struct {
     blue: u8,
 };
 
-const RED = Color { .red = 0xFF, .green = 0x00, .blue = 0x00 };
-const ORANGE = Color { .red = 0xFF, .green = 0x7F, .blue = 0x00 };
-const YELLOW = Color { .red = 0xFF, .green = 0xFF, .blue = 0x00 };
-const GREEN = Color { .red = 0x00, .green = 0xFF, .blue = 0x00 };
-const LIGHT_GREEN = Color { .red = 0xCA, .green = 0xFF, .blue = 0x00 };
-const BLUE = Color { .red = 0x00, .green = 0x00, .blue = 0xBF };
-const LIGHT_BLUE = Color { .red = 0x9B, .green = 0xF6, .blue = 0xFF };
-const INDIGO = Color { .red = 0x4B, .green = 0x00, .blue = 0x82 };
-const VIOLET = Color { .red = 0x94, .green = 0x00, .blue = 0xD3 };
-const PINK = Color { .red = 0xFF, .green = 0xC6, .blue = 0xFF };
-const GRAY = Color { .red = 0x30, .green = 0x30, .blue = 0x30 };
-const WHITE = Color { .red = 0xFF, .green = 0xFF, .blue = 0xFF };
+const RED = Color{ .red = 0xFF, .green = 0x00, .blue = 0x00 };
+const ORANGE = Color{ .red = 0xFF, .green = 0x7F, .blue = 0x00 };
+const YELLOW = Color{ .red = 0xFF, .green = 0xFF, .blue = 0x00 };
+const GREEN = Color{ .red = 0x00, .green = 0xFF, .blue = 0x00 };
+const LIGHT_GREEN = Color{ .red = 0xCA, .green = 0xFF, .blue = 0x00 };
+const BLUE = Color{ .red = 0x00, .green = 0x00, .blue = 0xBF };
+const LIGHT_BLUE = Color{ .red = 0x9B, .green = 0xF6, .blue = 0xFF };
+const INDIGO = Color{ .red = 0x4B, .green = 0x00, .blue = 0x82 };
+const VIOLET = Color{ .red = 0x94, .green = 0x00, .blue = 0xD3 };
+const PINK = Color{ .red = 0xFF, .green = 0xC6, .blue = 0xFF };
+const GRAY = Color{ .red = 0x30, .green = 0x30, .blue = 0x30 };
+const WHITE = Color{ .red = 0xFF, .green = 0xFF, .blue = 0xFF };
 
 const PanelInfo = struct {
     index: u8,
@@ -33,15 +33,15 @@ const PanelInfo = struct {
     sub_fname: []const u8,
 };
 
-const Panels = [_]PanelInfo {
-    PanelInfo { .index = 1, .event_type = fw.FWGUI_EVENT_GRAY_BUTTON, .color = GRAY, .text = "GRAY", .sub_fname = "/radio/white.sub" },
-    PanelInfo { .index = 2, .event_type = fw.FWGUI_EVENT_YELLOW_BUTTON, .color = YELLOW, .text = "YELLOW", .sub_fname = "/radio/yellow.sub" },
-    PanelInfo { .index = 3, .event_type = fw.FWGUI_EVENT_GREEN_BUTTON, .color = GREEN, .text = "GREEN", .sub_fname = "/radio/green.sub" },
-    PanelInfo { .index = 4, .event_type = fw.FWGUI_EVENT_BLUE_BUTTON, .color = BLUE, .text = "BLUE", .sub_fname = "/radio/blue.sub" },
-    PanelInfo { .index = 5, .event_type = fw.FWGUI_EVENT_RED_BUTTON, .color = RED, .text = "RED", .sub_fname = "/radio/red.sub" },
+const Panels = [_]PanelInfo{
+    PanelInfo{ .index = 1, .event_type = fw.FWGUI_EVENT_GRAY_BUTTON, .color = GRAY, .text = "GRAY", .sub_fname = "/radio/white.sub" },
+    PanelInfo{ .index = 2, .event_type = fw.FWGUI_EVENT_YELLOW_BUTTON, .color = YELLOW, .text = "YELLOW", .sub_fname = "/radio/yellow.sub" },
+    PanelInfo{ .index = 3, .event_type = fw.FWGUI_EVENT_GREEN_BUTTON, .color = GREEN, .text = "GREEN", .sub_fname = "/radio/green.sub" },
+    PanelInfo{ .index = 4, .event_type = fw.FWGUI_EVENT_BLUE_BUTTON, .color = BLUE, .text = "BLUE", .sub_fname = "/radio/blue.sub" },
+    PanelInfo{ .index = 5, .event_type = fw.FWGUI_EVENT_RED_BUTTON, .color = RED, .text = "RED", .sub_fname = "/radio/red.sub" },
 };
 
-const Buttons = [_]fw.FWGuiEventType {
+const Buttons = [_]fw.FWGuiEventType{
     fw.FWGUI_EVENT_GRAY_BUTTON,
     fw.FWGUI_EVENT_YELLOW_BUTTON,
     fw.FWGUI_EVENT_GREEN_BUTTON,
@@ -64,7 +64,7 @@ pub fn setup_panels() void {
 }
 
 pub fn show_rainbow_leds(max_loops: u32) void {
-    const Colors = [_]Color {
+    const Colors = [_]Color{
         RED,
         ORANGE,
         YELLOW,
@@ -122,7 +122,9 @@ pub fn process_events() void {
         // }
         for (Panels) |panel| {
             if (panel.event_type == last_event) {
+                fw.printInt(@ptrCast("\nShowing Panel %d...\n"), fw.printColorNormal, fw.printUInt32, panel.index);
                 fw.showPanel(panel.index);
+                fw.waitms(250);
                 // If we match the event type, show the panel, flash leds and transmit the radio
                 for (0..NUMBER_OF_LEDS) |led_index| {
                     fw.setBoardLED(@intCast(led_index), panel.color.red, panel.color.green, panel.color.blue, 250, fw.ledpulse);
