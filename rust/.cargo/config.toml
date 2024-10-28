@@ -1,0 +1,7 @@
+[build]
+target = "wasm32-wasip1"
+
+
+[target.wasm32-wasip1]
+rustflags = ["-C", "link-arg=-zstack-size=61440", "-C", "link-arg=--initial-heap=0", "-C", "link-arg=--max-memory=131072", "-C", "link-arg=--initial-memory=65536", "-C", "link-arg=--stack-first", "-C", "link-arg=--strip-all"]
+runner = "fwi-serial.cmd -mi 1 -fn /scripts/rust.wasm -w rust -s "

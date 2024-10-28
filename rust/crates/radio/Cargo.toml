@@ -1,16 +1,14 @@
 [package]
-name = "radio"
+name = "rust_radio"
 version = "0.1.0"
 edition = "2021"
 
-
-
 [profile.release]
 lto = true
-opt-level = 's'
+opt-level = 'z'
 codegen-units = 1
 panic = "abort"
 strip = true
 
-[build-dependencies]
-bindgen = "0.69.4"
+[dependencies]
+fwwasm-ffi = {path = "../fwwasm-ffi"}

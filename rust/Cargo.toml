@@ -1,0 +1,17 @@
+[workspace]
+members = [ "crates/fwwasm-ffi",
+    "crates/radio", "crates/rainbow_led"
+]
+
+resolver = "2"
+
+[metadata]
+wasm-name-section = false
+wasm-producers-section = false
+
+[profile.release]
+lto = true
+opt-level = 's'
+codegen-units = 1
+panic = "abort"
+strip = true

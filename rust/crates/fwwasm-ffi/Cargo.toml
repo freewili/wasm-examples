@@ -1,16 +1,16 @@
 [package]
-name = "fw_rs"
+name = "fwwasm-ffi"
 version = "0.1.0"
 edition = "2021"
 
-
-
 [profile.release]
 lto = true
-opt-level = 's'
+opt-level = 'z'
 codegen-units = 1
 panic = "abort"
 strip = true
 
 [dependencies]
 
+[build-dependencies]
+bindgen = "0.70.1"

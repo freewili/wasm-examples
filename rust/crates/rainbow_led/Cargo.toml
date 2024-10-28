@@ -1,0 +1,20 @@
+[package]
+name = "rust_rainbow_led"
+version = "0.1.0"
+edition = "2021"
+
+
+
+[profile.release]
+lto = true
+opt-level = 's'
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[package.metadata]
+wasm-name-section = false
+wasm-producers-section = false
+
+[dependencies]
+fwwasm-ffi = {path = "../fwwasm-ffi"}

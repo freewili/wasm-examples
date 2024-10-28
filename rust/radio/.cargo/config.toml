@@ -1,7 +1,0 @@
-[build]
-target = "wasm32-wasip1"
-
-
-[target.wasm32-wasip1]
-rustflags = ["-C", "link-arg=-zstack-size=102400",]
-runner = "fwi-serial.cmd -mi 1 -fn /scripts/radio.wasm -w radio.wasm -s "

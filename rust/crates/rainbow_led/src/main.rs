@@ -1,11 +1,4 @@
-#![no_std]
-#![no_main]
-
-use core::ffi::c_int;
-use core::panic::PanicInfo;
-
-mod fwwasm;
-use fwwasm::{setBoardLED, setled, waitms, LEDManagerLEDMode_ledpulsefade};
+use fwwasm_ffi::{setBoardLED, waitms, LEDManagerLEDMode};
 
 struct Color {
     red: u8,
@@ -67,8 +60,7 @@ const VIOLET: Color = Color {
 const MAX_LOOPS: u32 = 20;
 const NUM_LEDS: u32 = 7;
 
-#[no_mangle]
-pub extern "C" fn main() -> c_int {
+fn main() -> () {
     let rainbow_colors = [
         RED,
         PINK,
@@ -93,7 +85,7 @@ pub extern "C" fn main() -> c_int {
                     color.green.into(),
                     color.blue.into(),
                     300,
-                    LEDManagerLEDMode_ledpulsefade,
+                    LEDManagerLEDMode::ledpulsefade,
                 )
             };
             if color_choice >= rainbow_colors.len() - 1 {
@@ -104,18 +96,5 @@ pub extern "C" fn main() -> c_int {
 
             unsafe { waitms(50) };
         }
-    }
-    0
-}
-
-#[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
-    loop {
-        unsafe {
-            setled(1);
-            waitms(33);
-            setled(0);
-            waitms(33);
-        };
     }
 }
