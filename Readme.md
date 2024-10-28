@@ -9,10 +9,11 @@ Getting Started
 - Clone the repository
 - `git submodule update --init`
 - Follow the `Readme.md` in subdirectories of the language of choice.
+    - `AssemblyScript` = AssemblyScript **(Work in Progress)**
     - `cxx` = C/C++ examples
     - `fwi` = fwi resource files required with some examples
     - `fwwasm` = submodule that includes the fwwasm.h header
-    - `go` = tinygo examples
+    - `go` = tinygo examples **(Work in Progress)**
     - `rust` = rust examples
     - `zig` = zig examples
 
