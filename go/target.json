@@ -1,0 +1,16 @@
+{
+    "inherits": [ "wasip1" ],
+    "opt": "z",
+    "size": "short",
+    "print-allocs": true,
+    "gc": "leaking",
+    "scheduler": "none",
+    "no-debug": true,
+    "default-stack-size": 61440,
+    "ldflags": [
+        "--initial-memory=65536",
+        "--max-memory=131072",
+        "-zstack-size=61440"
+    ],
+    "flash-command": "fwi-serial -m 1 -fn /scripts/go.wasm -w go -s {hex}"
+}
