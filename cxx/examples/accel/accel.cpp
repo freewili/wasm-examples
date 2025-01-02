@@ -60,7 +60,7 @@ void loop()
 
 int main()
 {
-    setSensorSettings(1, 1, 1000, 1, 0, 1, 0, 1, 0, 1, 0);
+    setSensorSettings(1, 0, 1000, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0);
     printInt("\nmain()\n", printOutColor::printColorBlack, printOutDataType::printUInt32, 0);
     while (!exitApp)
     {
