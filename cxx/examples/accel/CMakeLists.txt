@@ -1,6 +1,9 @@
-cmake_minimum_required(VERSION 3.0)
-project(wasm_project)
+cmake_minimum_required(VERSION 3.25)
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O1 -s")
+set(CMAKE_EXECUTABLE_SUFFIX ${EXECUTABLE_SUFFIX})
 
-add_executable(accel.wasm "accel.cpp")
+project(accel VERSION 1.0.0 LANGUAGES CXX)
+
+add_executable(${PROJECT_NAME} accel.cpp)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC fwwasm)

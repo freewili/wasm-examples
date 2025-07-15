@@ -5,14 +5,14 @@ volatile uint8_t exitApp = 0;
 
 void processAccelData(uint8_t *event_data)
 {
-    int16_t iX, iY, iZ, iTc, iTf;
+    int16_t iX, iY, iZ; //, iTc, iTf;
     bool iMoving, iMovingX, iMovingY, iMovingZ;
 
-    iX = event_data[0] | event_data[1] << 8;
-    iY = event_data[2] | event_data[3] << 8;
-    iZ = event_data[4] | event_data[5] << 8;
-    iTc = event_data[6] | event_data[7] << 8;
-    iTf = event_data[8] | event_data[9] << 8;
+    iX = static_cast<int16_t>(event_data[0] | event_data[1] << 8);
+    iY = static_cast<int16_t>(event_data[2] | event_data[3] << 8);
+    iZ = static_cast<int16_t>(event_data[4] | event_data[5] << 8);
+    ///iTc = static_cast<int16_t>(event_data[6] | event_data[7] << 8);
+    //iTf = static_cast<int16_t>(event_data[8] | event_data[9] << 8);
     iMoving = event_data[10] & 0x1;
     iMovingX = event_data[10] & 0x2 ? 1 : 0;
     iMovingY = event_data[10] & 0x4 ? 1 : 0;

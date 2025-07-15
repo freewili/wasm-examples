@@ -80,7 +80,7 @@ uint8_t exitApp = 0;
 uint8_t get_random() // range 0-3
 {
 	// wilirand() has the same seed so attempt to adjust it with millis()
-	unsigned int result = (unsigned int)wilirand() + millis();
+	unsigned int result = static_cast<unsigned int>(wilirand()) + millis();
 	return ((result >> 2) & 0x03);
 }
 
@@ -100,7 +100,7 @@ void light_and_sound_game(uint8_t index)
 	int gamespeed_adjusted = GAMESPD;
 	gamespeed_adjusted -= speedup;
 
-	light_and_sound(index, (float)gamespeed_adjusted / 1000.0f, gamespeed_adjusted + (gamespeed_adjusted / 2));
+	light_and_sound(index, static_cast<float>(gamespeed_adjusted) / 1000.0f, gamespeed_adjusted + (gamespeed_adjusted / 2));
 }
 
 int getButtonPress()
@@ -285,7 +285,7 @@ bool gameplay()
 			if (button != BUT_NONE)
 			{ // the player pressed a button, let me light the LED and see if it's the right one!
 				timeout = millis(); // resetting the timeout
-				light_and_sound_game(button); // lighting the led for the pressed button
+				light_and_sound_game(static_cast<uint8_t>(button)); // lighting the led for the pressed button
 				if (button == gamSeq[j])
 				{
 					j++; // the player chose the right color, step ahead until the end of the current sequence
