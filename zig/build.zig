@@ -21,16 +21,17 @@ pub fn build(b: *std.Build) void {
 
     exe.addIncludePath(b.path("../fwwasm/include"));
 
-    // Page size is 64KB and we are limited to 2 in Free-Wili
-    const number_of_pages = 2;
-
+    // Page size is 64KB and we are limited to 1 in Free-Wili
     exe.global_base = 1024;
-    //exe.entry = .disabled;
     exe.rdynamic = false;
     exe.import_memory = false;
-    exe.stack_size = std.wasm.page_size;
-    exe.initial_memory = std.wasm.page_size * 2;
-    exe.max_memory = std.wasm.page_size * number_of_pages;
+    exe.stack_size = 59392;
+    exe.initial_memory = 65536;
+    exe.max_memory = 65536;
+    
+    // Note: --stack-first is not directly supported in Zig build system yet
+    // For now, we'll rely on the global_base setting and stack_size
+    // TODO: Add --stack-first support when available in future Zig versions
 
     // This declares intent for the executable to be installed into the
     // standard location when the user invokes the "install" step (the default
@@ -59,6 +60,15 @@ pub fn build(b: *std.Build) void {
     // This will evaluate the `run` step rather than the default, which is "install".
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
+
+    // Create a step to run fwi-serial after building
+    const fwi_cmd = b.addSystemCommand(&[_][]const u8{
+        "uv", "run", "fwi-serial", "-w", "-s", "zig-out/bin/zig_radio.wasm"
+    });
+    fwi_cmd.step.dependOn(b.getInstallStep()); // Ensure the build completes first
+
+    const fwi_step = b.step("fwi", "Build and run with fwi-serial");
+    fwi_step.dependOn(&fwi_cmd.step);
 
     // Creates a step for unit testing. This only builds the test executable
     // but does not run it.
