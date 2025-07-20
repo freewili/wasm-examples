@@ -1,13 +1,9 @@
 // tinygo build -target ./target.json -panic=trap -opt=z -size=short -no-debug -print-allocs=.
 package main
 
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <errno.h>
 // #include "../fwwasm/include/fwwasm.h"
 import "C"
-//import "unsafe"
-import "slices"
+import "unsafe"
 
 const (
 	NumberOfLeds = 7
@@ -21,8 +17,8 @@ type PanelInfo struct {
 	sub_fname string
 }
 
-func Panels() ([]PanelInfo) {
-	return []PanelInfo{
+func Panels() ([5]PanelInfo) {
+	return [5]PanelInfo{
 		PanelInfo{1, C.FWGUI_EVENT_GRAY_BUTTON, ColorGray(), "GRAY", "/radio/white.sub"},
 		PanelInfo{2, C.FWGUI_EVENT_YELLOW_BUTTON, ColorYellow(), "YELLOW", "/radio/yellow.sub"},
 		PanelInfo{3, C.FWGUI_EVENT_GREEN_BUTTON, ColorGreen(), "GREEN", "/radio/green.sub"},
@@ -31,8 +27,8 @@ func Panels() ([]PanelInfo) {
 	}
 }
 
-func Buttons() ([]int) {
-	return []int {
+func Buttons() ([5]int) {
+	return [5]int{
 		C.FWGUI_EVENT_GRAY_BUTTON,
 		C.FWGUI_EVENT_YELLOW_BUTTON,
 		C.FWGUI_EVENT_GREEN_BUTTON,
@@ -45,24 +41,21 @@ func Buttons() ([]int) {
 func SetupPanels() {
 	// Setup the main panel that shows pip boy
 	C.addPanel(0, 1, 0, 0, 0, 0, 0, 0, 0)
-	fname := C.CString("pip_boy.fwi")
-	C.addControlPictureFromFile(0, 0, 0, 0, fname, 1);
-	// defer C.free(unsafe.Pointer(fname))
-	// title := C.CString("Press a Button")
-	// C.addControlText(0, 1, 90, 180, 1, 64, C.int(ColorWhite().Red), C.int(ColorWhite().Green), C.int(ColorWhite().Blue), title);
-	// defer C.free(unsafe.Pointer(title))
+	var fname_bytes [32]byte
+	copy(fname_bytes[:], "pip_boy.fwi")
+	C.addControlPictureFromFile(0, 0, 0, 0, (*C.char)(unsafe.Pointer(&fname_bytes[0])), 1);
 	C.showPanel(0)
 	// Setup the rest of the panels
 	for _, panel := range Panels() {
 		C.addPanel(C.int(panel.index), 1, 0, 0, 0, C.int(panel.color.Red), C.int(panel.color.Green), C.int(panel.color.Blue), 0);
-		text := C.CString(panel.text)
-		C.addControlText(C.int(panel.index), 1, 10, 50, 2, 0, 0, 0, 0, text);
-		// defer C.free(unsafe.Pointer(text))
+		var text_bytes [32]byte
+		copy(text_bytes[:], panel.text)
+		C.addControlText(C.int(panel.index), 1, 10, 50, 2, 0, 0, 0, 0, (*C.char)(unsafe.Pointer(&text_bytes[0])));
 	}
 }
 
 func ShowRainbowLeds(max_loops int) {
-	colors := []Color{
+	colors := [10]Color{
 		ColorRed(),
 		ColorOrange(),
 		ColorYellow(),
@@ -98,10 +91,10 @@ func ShowRainbowLeds(max_loops int) {
 }
 
 func ProcessEvents() {
-	// msg := C.CString("\nListening to events...\n")
+	var buffer [256]byte
+	copy(buffer[:], "\nListening to events...\n")
 	red_count := 0
-	// C.printInt(msg, C.printColorNormal, C.printUInt32, 0)
-	// defer C.free(unsafe.Pointer(msg))
+	C.printInt((*C.char)(unsafe.Pointer(&buffer[0])), C.printColorNormal, C.printUInt32, 0)
 	for {
 		C.waitms(33);
 		if C.hasEvent() == 0 {
@@ -109,10 +102,19 @@ func ProcessEvents() {
 		}
 		event_data := [C.FW_GET_EVENT_DATA_MAX]C.uchar{0}
 		last_event := C.getEventData(&event_data[0])
+		
+		is_button_event := false
+        for _, button := range Buttons() {
+            if button == int(last_event) {
+                is_button_event = true
+                break
+            }
+        }
 		// We only want to process button presses
-		if !slices.ContainsFunc(Buttons(), func(button int) bool { return button == int(last_event) }) {
-			continue
-		}
+        if !is_button_event {
+            continue
+        }
+				
 		// Lets match up the button to the panel info and do everything
 		for _, panel := range Panels() {
 			// If we match the event type, show the panel, flash leds and transmit the radio
@@ -127,9 +129,9 @@ func ProcessEvents() {
 						C.ledpulse,
 					)
 				}
-				sub_fname := C.CString(panel.sub_fname)
-				C.RadioTxSubFile(1, sub_fname)
-				// defer C.free(unsafe.Pointer(sub_fname))
+				clear(buffer[:])
+				copy(buffer[:], panel.sub_fname)
+				C.RadioTxSubFile(1, (*C.char)(unsafe.Pointer(&buffer[0])))
 				// Wait for the radio to stop transmitting
 				for {
 					if C.RadioSubFileIsTransmitting() == 0 {
@@ -147,14 +149,11 @@ func ProcessEvents() {
 			red_count = 0
 			continue
 		}
-		// msg := C.CString("\nLast event was red button: %d\n")
-		// C.printInt(msg, C.printColorNormal, C.printUInt32, C.int(red_count))
-		// defer C.free(unsafe.Pointer(msg))
 		red_count += 1
 		if red_count >= 3 {
-			sub_fname := C.CString("/radio/off.sub")
-			C.RadioTxSubFile(1, sub_fname)
-			// defer C.free(unsafe.Pointer(sub_fname))
+			clear(buffer[:])
+			copy(buffer[:], "/radio/off.sub")
+			C.RadioTxSubFile(1, (*C.char)(unsafe.Pointer(&buffer[0])))
 			// Wait for the radio to stop transmitting
 			for {
 				if C.RadioSubFileIsTransmitting() == 0 {
