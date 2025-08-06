@@ -1,5 +1,5 @@
 [workspace]
-members = [ "crates/fwwasm-ffi",
+members = [ "crates/build_a_badge", "crates/fwwasm-ffi",
     "crates/radio", "crates/rainbow_led"
 ]
 
