@@ -1,0 +1,59 @@
+// ❯ grain compile rainbow_leds.gr --initial-memory-pages=2 --maximum-memory-pages=2 --no-gc --release --elide-type-info --wat --no-bulk-memory --no-link --memory-base=32768 --import-memory --no-wasm-tail-call --single-file --wasi-polyfill=minimal.js
+module RainbowLeds
+
+// Import WASM functions
+foreign wasm setBoardLED: (Number, Number, Number, Number, Number, Number) => Void from "wiliwasm"
+foreign wasm waitms: (Number) => Void from "wiliwasm"
+
+
+setBoardLED(0, 50, 50, 50, 500, 7)
+setBoardLED(1, 50, 50, 50, 500, 7)
+setBoardLED(2, 50, 50, 50, 500, 7)
+setBoardLED(3, 50, 50, 50, 500, 7)
+// // Use constants instead of heap-allocated data structures
+// let numberOfLeds = 7
+// let ledPulseFade = 1
+
+// // Define colors as individual constants (no heap allocation)
+// let colorRed = (255, 0, 0)
+// let colorOrange = (255, 165, 0)
+// let colorYellow = (255, 255, 0)
+// let colorGreen = (0, 255, 0)
+// let colorBlue = (0, 0, 255)
+// let colorIndigo = (75, 0, 130)
+// let colorViolet = (238, 130, 238)
+
+// // Helper function to get color by index (no array allocation)
+// let getColor = (index) => {
+//   let colorIndex = index % 7
+//   if (colorIndex == 0) colorRed
+//   else if (colorIndex == 1) colorOrange
+//   else if (colorIndex == 2) colorYellow
+//   else if (colorIndex == 3) colorGreen
+//   else if (colorIndex == 4) colorBlue
+//   else if (colorIndex == 5) colorIndigo
+//   else colorViolet
+// }
+
+// let setLedColor = (ledIndex, color, duration, mode) => {
+//   let (r, g, b) = color
+//   setBoardLED(ledIndex, r, g, b, duration, mode)
+// }
+
+// let showRainbow = (loops) => {
+//   let mut loop = 0
+//   while (loop < loops) {
+//     let mut led = 0
+//     while (led < numberOfLeds) {
+//       let color = getColor(led + loop)
+//       setLedColor(led, color, 300, ledPulseFade)
+//       waitms(50)
+//       led += 1
+//     }
+//     waitms(100)
+//     loop += 1
+//   }
+// }
+
+// // Main execution - no print statements (they allocate strings)
+// showRainbow(10)
