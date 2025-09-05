@@ -1,0 +1,8 @@
+wifiAPEn=1
+wifiAPssid=Marty-WILi
+wifiAPAuth=0
+btEn=1
+btAPen=Marty-WILi
+btTerm=1
+serverStart=1
+orcaBottlenoseComm=1
