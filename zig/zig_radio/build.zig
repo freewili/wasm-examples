@@ -8,27 +8,29 @@ pub fn build(b: *std.Build) void {
     // what target to build for. Here we do not override the defaults, which
     // means any target is allowed, and the default is native. Other options
     // for restricting supported target set are available.
-    const target = b.resolveTargetQuery(.{ .cpu_arch = .wasm32, .os_tag = .wasi });
 
+    const target = b.resolveTargetQuery(.{ .cpu_arch = .wasm32, .os_tag = .wasi });
     const optimize = std.builtin.OptimizeMode.ReleaseSmall;
 
     const exe = b.addExecutable(.{
         .name = "zig_radio",
-        .root_source_file = b.path("src/main.zig"),
-        .target = target,
-        .optimize = optimize,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/main.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
     });
 
-    exe.addIncludePath(b.path("../fwwasm/include"));
+    exe.addIncludePath(b.path("../../fwwasm/include"));
 
     // Page size is 64KB and we are limited to 1 in Free-Wili
     exe.global_base = 1024;
     exe.rdynamic = false;
     exe.import_memory = false;
-    exe.stack_size = 59392;
+    exe.stack_size = 1024 * 48; // 48KB stack
     exe.initial_memory = 65536;
     exe.max_memory = 65536;
-    
+
     // Note: --stack-first is not directly supported in Zig build system yet
     // For now, we'll rely on the global_base setting and stack_size
     // TODO: Add --stack-first support when available in future Zig versions
@@ -62,9 +64,7 @@ pub fn build(b: *std.Build) void {
     run_step.dependOn(&run_cmd.step);
 
     // Create a step to run fwi-serial after building
-    const fwi_cmd = b.addSystemCommand(&[_][]const u8{
-        "uv", "run", "fwi-serial", "-w", "-s", "zig-out/bin/zig_radio.wasm"
-    });
+    const fwi_cmd = b.addSystemCommand(&[_][]const u8{ "uv", "run", "fwi-serial", "-w", "-s", "zig-out/bin/zig_radio.wasm" });
     fwi_cmd.step.dependOn(b.getInstallStep()); // Ensure the build completes first
 
     const fwi_step = b.step("fwi", "Build and run with fwi-serial");
@@ -72,20 +72,23 @@ pub fn build(b: *std.Build) void {
 
     // Creates a step for unit testing. This only builds the test executable
     // but does not run it.
-    const lib_unit_tests = b.addTest(.{
-        .root_source_file = b.path("src/root.zig"),
-        .target = target,
-        .optimize = optimize,
-    });
 
+    const lib_unit_tests = b.addTest(.{
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/root.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
     const run_lib_unit_tests = b.addRunArtifact(lib_unit_tests);
 
     const exe_unit_tests = b.addTest(.{
-        .root_source_file = b.path("src/main.zig"),
-        .target = target,
-        .optimize = optimize,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/main.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
     });
-
     const run_exe_unit_tests = b.addRunArtifact(exe_unit_tests);
 
     // Similar to creating the run step earlier, this exposes a `test` step to
