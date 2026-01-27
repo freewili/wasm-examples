@@ -1,15 +1,11 @@
+#![no_std]
+#![no_main]
 use fwwasm_ffi::*;
-// {
-//     addControlPictureFromFile, addControlText, addPanel, exitToMainAppMenu, getEventData, hasEvent,
-//     playSoundFromNameOrID, printInt, printOutColor, printOutDataType, setBoardLED, showPanel,
-//     waitms, FWGuiEventType, LEDManagerLEDMode, RadioSetIdle, RadioSetTx, RadioTxSubFile,
-//     FW_GET_EVENT_DATA_MAX,
-// };
 
-// #[panic_handler]
-// fn panic(_info: &core::panic::PanicInfo) -> ! {
-//     loop {}
-// }
+#[panic_handler]
+fn panic(_info: &core::panic::PanicInfo) -> ! {
+     loop {}
+}
 
 const NUMBER_OF_LEDS: u32 = 7;
 
@@ -256,8 +252,8 @@ fn process_events() {
     }
 }
 
-
-fn main() -> () {
+#[unsafe(no_mangle)]
+extern "C" fn _start() {
     setup_panels();
 
     show_rainbow_leds(5);

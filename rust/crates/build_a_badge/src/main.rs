@@ -1,11 +1,11 @@
 #![no_std]
 #![no_main]
 #![allow(unsafe_op_in_unsafe_fn)]
-use core::{ffi::c_int, panic::PanicInfo};
+use core::panic::PanicInfo;
 
 pub mod colors;
 
-use fwwasm_ffi::{LEDManagerLEDMode, exitToMainAppMenu, printInt, printOutColor, printOutDataType};
+use fwwasm_ffi::{exitToMainAppMenu, printInt, printOutColor, printOutDataType};
 
 // Control IDs
 const PANEL_CONTROL: i32 = 0;
@@ -13,14 +13,10 @@ const BADGE_IMAGE_CONTROL: i32 = 0;
 const BADGE_NAME_TEXT_CONTROL: i32 = 1;
 
 // Musical note frequencies in Hz
-const NOTE_E2 :f32 = 82.41;
-const NOTE_A2 :f32 = 110.0;
 const NOTE_E3 :f32 = 164.81;
 const NOTE_CS3 :f32 = 138.59;
 const NOTE_A3 :f32 = 220.0;
 const NOTE_C4 :f32 = 261.63;
-const NOTE_E4 :f32 = 329.63;
-const NOTE_G4 :f32 = 392.0;
 
 const NOTE_PLAY_DURATION :f32 = 0.5;
 

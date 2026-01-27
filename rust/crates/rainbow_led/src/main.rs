@@ -1,4 +1,11 @@
+#![no_std]
+#![no_main]
 use fwwasm_ffi::{setBoardLED, waitms, LEDManagerLEDMode};
+
+#[panic_handler]
+fn panic(_info: &core::panic::PanicInfo) -> ! {
+    loop {}
+}
 
 struct Color {
     red: u8,
@@ -60,7 +67,8 @@ const VIOLET: Color = Color {
 const MAX_LOOPS: u32 = 20;
 const NUM_LEDS: u32 = 7;
 
-fn main() -> () {
+#[unsafe(no_mangle)]
+extern "C" fn _start() {
     let rainbow_colors = [
         RED,
         PINK,

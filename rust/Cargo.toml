@@ -5,7 +5,7 @@ members = [ "crates/build_a_badge", "crates/fwwasm-ffi",
 
 resolver = "2"
 
-[metadata]
+[workspace.metadata]
 wasm-name-section = false
 wasm-producers-section = false
 
