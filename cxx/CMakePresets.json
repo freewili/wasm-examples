@@ -3,10 +3,9 @@
   "configurePresets": [
       {
           "name": "windows-base",
-          "description": "Target Windows WASI-SDK with CMake and Ninja",
-          "hidden": false,
+          "description": "Target Windows WASI-SDK with CMake and Ninja (Base)",
+          "hidden": true,
           "generator": "Ninja",
-          "binaryDir": "${sourceDir}/build",
           "condition": {
               "type": "equals",
               "lhs": "${hostSystemName}",
@@ -14,44 +13,80 @@
           }
       },
       {
+          "name": "windows-debug",
+          "inherits": "windows-base",
+          "displayName": "Windows Debug",
+          "description": "Target Windows WASI-SDK with CMake and Ninja (RelWithDebInfo)",
+          "binaryDir": "${sourceDir}/build/debug",
+          "cacheVariables": {
+              "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+          }
+      },
+      {
+          "name": "windows-release",
+          "inherits": "windows-base",
+          "displayName": "Windows Release",
+          "description": "Target Windows WASI-SDK with CMake and Ninja (MinSizeRel)",
+          "binaryDir": "${sourceDir}/build/release",
+          "cacheVariables": {
+              "CMAKE_BUILD_TYPE": "MinSizeRel"
+          }
+      },
+      {
         "name": "base",
-        "description": "Target WASI-SDK with CMake and Ninja",
-        "hidden": false,
-        "binaryDir": "${sourceDir}/build",
+        "description": "Target WASI-SDK with CMake and Ninja (Base)",
+        "hidden": true,
+        "generator": "Ninja",
         "condition": {
             "type": "notEquals",
             "lhs": "${hostSystemName}",
             "rhs": "Windows"
         }
-    }
+      },
+      {
+          "name": "debug",
+          "inherits": "base",
+          "displayName": "Debug",
+          "description": "Target WASI-SDK with CMake and Ninja (RelWithDebInfo)",
+          "binaryDir": "${sourceDir}/build/debug",
+          "cacheVariables": {
+              "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+          }
+      },
+      {
+          "name": "release",
+          "inherits": "base",
+          "displayName": "Release",
+          "description": "Target WASI-SDK with CMake and Ninja (MinSizeRel)",
+          "binaryDir": "${sourceDir}/build/release",
+          "cacheVariables": {
+              "CMAKE_BUILD_TYPE": "MinSizeRel"
+          }
+      }
   ],
   "buildPresets": [
     {
         "name": "Windows Debug",
         "displayName": "Windows Debug",
-        "configurePreset": "windows-base",
-        "configuration": "RelWithDebInfo",
+        "configurePreset": "windows-debug",
         "description": "Target Windows WASI-SDK with CMake and Ninja (RelWithDebInfo)"
     },
     {
         "name": "Windows Release",
         "displayName": "Windows Release",
-        "configurePreset": "windows-base",
-        "configuration": "MinSizeRel",
-        "description": "Target Windows WASI-SDK with CMake and Ninja (Release)"
+        "configurePreset": "windows-release",
+        "description": "Target Windows WASI-SDK with CMake and Ninja (MinSizeRel)"
     },
     {
         "name": "Debug",
         "displayName": "Debug",
-        "configurePreset": "base",
-        "configuration": "RelWithDebInfo",
+        "configurePreset": "debug",
         "description": "Target WASI-SDK with CMake and Ninja (RelWithDebInfo)"
     },
     {
         "name": "Release",
         "displayName": "Release",
-        "configurePreset": "base",
-        "configuration": "MinSizeRel",
+        "configurePreset": "release",
         "description": "Target WASI-SDK with CMake and Ninja (Release)"
     }
   ]
