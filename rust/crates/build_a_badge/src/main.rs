@@ -98,7 +98,7 @@ unsafe fn load_badge_values_from_text_file() -> bool{
         fwwasm_ffi::closeFile(badge_file_handle);         
         return false;
     }
-
+ 
     // Set badge name text control to the name we read from the file.
     fwwasm_ffi::setControlValueText(PANEL_CONTROL, BADGE_NAME_TEXT_CONTROL, line.as_ptr());           
     fwwasm_ffi::printInt(

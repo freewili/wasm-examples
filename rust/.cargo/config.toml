@@ -3,5 +3,5 @@ target = "wasm32-unknown-unknown"
 
 
 [target.wasm32-unknown-unknown]
-rustflags = ["-C", "link-arg=-zstack-size=49152", "-C", "link-arg=--initial-heap=0", "-C", "link-arg=--max-memory=65536", "-C", "link-arg=--initial-memory=65536", "-C", "link-arg=--stack-first", "-C", "link-arg=--strip-all"]
+rustflags = ["-C", "target-feature=-bulk-memory,-bulk-memory-opt", "-C", "link-arg=-zstack-size=49152", "-C", "link-arg=--initial-heap=0", "-C", "link-arg=--max-memory=65536", "-C", "link-arg=--initial-memory=65536", "-C", "link-arg=--stack-first", "-C", "link-arg=--strip-all"]
 runner = "fwi-serial -l -w -s "
