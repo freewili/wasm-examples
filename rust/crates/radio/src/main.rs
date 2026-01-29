@@ -35,6 +35,9 @@ const PINK: Color = Color::new(255, 192, 203);
 const GRAY: Color = Color::new(0x30, 0x30, 0x30);
 const WHITE: Color = Color::new(255, 255, 255);
 
+// Main panel index - Start at 1 since 0 is reserved for the event log
+const MAIN_PANEL_INDEX: i32 = 1;
+
 struct PanelInfo {
     index: i32,
     event_type: FWGuiEventType,
@@ -63,35 +66,35 @@ impl PanelInfo {
 
 const PANELS: [PanelInfo; 5] = [
     PanelInfo::new(
-        1,
+        2,
         FWGuiEventType::FWGUI_EVENT_GRAY_BUTTON,
         GRAY,
         c"GRAY".as_ptr(),
         c"/radio/white.sub".as_ptr(),
     ),
     PanelInfo::new(
-        2,
+        3,
         FWGuiEventType::FWGUI_EVENT_YELLOW_BUTTON,
         YELLOW,
         c"YELLOW".as_ptr(),
         c"/radio/yellow.sub".as_ptr(),
     ),
     PanelInfo::new(
-        3,
+        4,
         FWGuiEventType::FWGUI_EVENT_GREEN_BUTTON,
         GREEN,
         c"GREEN".as_ptr(),
         c"/radio/green.sub".as_ptr(),
     ),
     PanelInfo::new(
-        4,
+        5,
         FWGuiEventType::FWGUI_EVENT_BLUE_BUTTON,
         BLUE,
         c"BLUE".as_ptr(),
         c"/radio/blue.sub".as_ptr(),
     ),
     PanelInfo::new(
-        5,
+        6,
         FWGuiEventType::FWGUI_EVENT_RED_BUTTON,
         RED,
         c"RED".as_ptr(),
@@ -110,10 +113,10 @@ const BUTTONS: [u32; 5] = [
 fn setup_panels() {
     unsafe {
         // Setup the main panel that shows pip boy
-        addPanel(0, 1, 0, 0, 0, 0, 0, 0, 0);
-        addControlPictureFromFile(0, 0, 0, 0, c"pip_boy.fwi".as_ptr(), 1);
+        addPanel(MAIN_PANEL_INDEX, 1, 0, 0, 0, 0, 0, 0, 0);
+        addControlPictureFromFile(MAIN_PANEL_INDEX, 0, 0, 0, c"pip_boy.fwi".as_ptr(), 1);
         addControlText(
-            0,
+            MAIN_PANEL_INDEX,
             1,
             90,
             180,
@@ -124,7 +127,7 @@ fn setup_panels() {
             WHITE.blue,
             c"Press a Button".as_ptr(),
         );
-        showPanel(0);
+        showPanel(MAIN_PANEL_INDEX);
         // Setup the rest of the panels
         for panel in PANELS.iter() {
             addPanel(
@@ -228,7 +231,7 @@ fn process_events() {
                     waitms(33);
                 }
                 // show the main panel
-                showPanel(0);
+                showPanel(MAIN_PANEL_INDEX);
                 break;
             }
             // we need an exit condition
@@ -252,8 +255,24 @@ fn process_events() {
     }
 }
 
+// GUI Auto Button Levels
+// This is temporarily defined here until it is added to fwwasm-ffi
+// #[allow(dead_code)]
+// const GUI_AUTO_BUTTON_LEVEL_LONG_PRESS_HOME_ONLY: i32 = 0;
+// #[allow(dead_code)]
+// const GUI_AUTO_BUTTON_LEVEL_HOME_AND_STOP: i32 = 1;
+// #[allow(dead_code)]
+// const GUI_AUTO_BUTTON_LEVEL_HOME_ONLY_LONG_STOP: i32 = 2;
+// #[allow(dead_code)]
+// const GUI_AUTO_BUTTON_LEVEL_HOME_ONLY: i32 = 3;
+// #[allow(dead_code)]
+// const GUI_AUTO_BUTTON_LEVEL_NONE: i32 = 4;
+
 #[unsafe(no_mangle)]
 extern "C" fn _start() {
+    // Disable automatic handling of Blue and Red buttons
+    unsafe { setCanDisplayReactToButtons(4); }
+    
     setup_panels();
 
     show_rainbow_leds(5);

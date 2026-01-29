@@ -19,11 +19,11 @@ type PanelInfo struct {
 
 func Panels() ([5]PanelInfo) {
 	return [5]PanelInfo{
-		PanelInfo{1, C.FWGUI_EVENT_GRAY_BUTTON, ColorGray(), "GRAY", "/radio/white.sub"},
-		PanelInfo{2, C.FWGUI_EVENT_YELLOW_BUTTON, ColorYellow(), "YELLOW", "/radio/yellow.sub"},
-		PanelInfo{3, C.FWGUI_EVENT_GREEN_BUTTON, ColorGreen(), "GREEN", "/radio/green.sub"},
-		PanelInfo{4, C.FWGUI_EVENT_BLUE_BUTTON, ColorBlue(), "BLUE", "/radio/blue.sub"},
-		PanelInfo{5, C.FWGUI_EVENT_RED_BUTTON, ColorRed(), "RED", "/radio/red.sub"},
+		PanelInfo{2, C.FWGUI_EVENT_GRAY_BUTTON, ColorGray(), "GRAY", "/radio/white.sub"},
+		PanelInfo{3, C.FWGUI_EVENT_YELLOW_BUTTON, ColorYellow(), "YELLOW", "/radio/yellow.sub"},
+		PanelInfo{4, C.FWGUI_EVENT_GREEN_BUTTON, ColorGreen(), "GREEN", "/radio/green.sub"},
+		PanelInfo{5, C.FWGUI_EVENT_BLUE_BUTTON, ColorBlue(), "BLUE", "/radio/blue.sub"},
+		PanelInfo{6, C.FWGUI_EVENT_RED_BUTTON, ColorRed(), "RED", "/radio/red.sub"},
 	}
 }
 
@@ -37,14 +37,15 @@ func Buttons() ([5]int) {
 	}
 }
 
+const MAIN_PANEL_INDEX = 1
 
 func SetupPanels() {
 	// Setup the main panel that shows pip boy
-	C.addPanel(0, 1, 0, 0, 0, 0, 0, 0, 0)
+	C.addPanel(MAIN_PANEL_INDEX, 1, 0, 0, 0, 0, 0, 0, 0)
 	var fname_bytes [32]byte
 	copy(fname_bytes[:], "pip_boy.fwi")
-	C.addControlPictureFromFile(0, 0, 0, 0, (*C.char)(unsafe.Pointer(&fname_bytes[0])), 1);
-	C.showPanel(0)
+	C.addControlPictureFromFile(MAIN_PANEL_INDEX, 0, 0, 0, (*C.char)(unsafe.Pointer(&fname_bytes[0])), 1);
+	C.showPanel(MAIN_PANEL_INDEX)
 	// Setup the rest of the panels
 	for _, panel := range Panels() {
 		C.addPanel(C.int(panel.index), 1, 0, 0, 0, C.int(panel.color.Red), C.int(panel.color.Green), C.int(panel.color.Blue), 0);
@@ -140,7 +141,7 @@ func ProcessEvents() {
 					C.waitms(33)
 				}
 				// Show the main panel
-				C.showPanel(0)
+				C.showPanel(MAIN_PANEL_INDEX)
 				break;
 			}	
 		}
@@ -168,7 +169,11 @@ func ProcessEvents() {
 	}
 }
 
-func main() {
+//export _start
+func _start() {
+	// Disable automatic handling of Blue and Red buttons
+	C.setCanDisplayReactToButtons(4)
+
 	SetupPanels()
 
 	ShowRainbowLeds(5)

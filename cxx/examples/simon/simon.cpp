@@ -70,6 +70,9 @@ struct GameButton
 uint8_t LEVEL_GUESSES[NUM_LEVELS] = { L1_GUESSES, L2_GUESSES, L3_GUESSES, L4_GUESSES };
 uint8_t gameLevel = LEVEL_1;
 
+// Main panel index - Start at 1 since 0 is reserved for the event log
+constexpr const uint8_t MAIN_PANEL_INDEX = 1;
+
 volatile uint8_t statGame = 0; // 0 = idle, 1 = game running
 GameButton game_buttons[4];
 uint8_t gamSeq[L4_GUESSES]; // no need to initialize this array
@@ -197,7 +200,7 @@ void setup()
 
 	addPanel(0, 1, 0, 0, 0, 0xFF, 0xAA, 0xCC, 1);
 	set_outofgame_menu();
-	showPanel(0);
+	showPanel(MAIN_PANEL_INDEX);
 
 	speedup = 0;
 

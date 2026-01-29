@@ -9,7 +9,11 @@ pub fn build(b: *std.Build) void {
     // means any target is allowed, and the default is native. Other options
     // for restricting supported target set are available.
 
-    const target = b.resolveTargetQuery(.{ .cpu_arch = .wasm32, .os_tag = .wasi });
+    const target = b.resolveTargetQuery(.{
+        .cpu_arch = .wasm32,
+        .os_tag = .freestanding,
+        .cpu_features_sub = std.Target.wasm.featureSet(&.{ .bulk_memory, .bulk_memory_opt }),
+    });
     const optimize = std.builtin.OptimizeMode.ReleaseSmall;
 
     const exe = b.addExecutable(.{
@@ -20,6 +24,9 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
         }),
     });
+
+    // Enable LTO (Link Time Optimization)
+    exe.want_lto = true;
 
     exe.addIncludePath(b.path("../../fwwasm/include"));
 

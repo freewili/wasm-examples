@@ -27,6 +27,9 @@ constexpr Color PINK(255, 192, 203);
 constexpr Color GRAY(0x30, 0x30, 0x30);
 constexpr Color WHITE(255, 255, 255);
 
+// Main panel index - Start at 1 since 0 is reserved for the event log
+constexpr const uint8_t MAIN_PANEL_INDEX = 1;
+
 struct PanelInfo {
     const uint8_t index;
     const FWGuiEventType event_type;
@@ -36,11 +39,11 @@ struct PanelInfo {
 };
 
 constexpr std::array Panels{
-    PanelInfo{1, FWGuiEventType::FWGUI_EVENT_GRAY_BUTTON, GRAY, "GRAY", "/radio/white.sub"},
-    PanelInfo{2, FWGuiEventType::FWGUI_EVENT_YELLOW_BUTTON, YELLOW, "YELLOW", "/radio/yellow.sub"},
-    PanelInfo{3, FWGuiEventType::FWGUI_EVENT_GREEN_BUTTON, GREEN, "GREEN", "/radio/green.sub"},
-    PanelInfo{4, FWGuiEventType::FWGUI_EVENT_BLUE_BUTTON, BLUE, "BLUE", "/radio/blue.sub"},
-    PanelInfo{5, FWGuiEventType::FWGUI_EVENT_RED_BUTTON, RED, "RED", "/radio/red.sub"},
+    PanelInfo{2, FWGuiEventType::FWGUI_EVENT_GRAY_BUTTON, GRAY, "GRAY", "/radio/white.sub"},
+    PanelInfo{3, FWGuiEventType::FWGUI_EVENT_YELLOW_BUTTON, YELLOW, "YELLOW", "/radio/yellow.sub"},
+    PanelInfo{4, FWGuiEventType::FWGUI_EVENT_GREEN_BUTTON, GREEN, "GREEN", "/radio/green.sub"},
+    PanelInfo{5, FWGuiEventType::FWGUI_EVENT_BLUE_BUTTON, BLUE, "BLUE", "/radio/blue.sub"},
+    PanelInfo{6, FWGuiEventType::FWGUI_EVENT_RED_BUTTON, RED, "RED", "/radio/red.sub"},
 };
 
 constexpr std::array Buttons{
@@ -51,10 +54,10 @@ constexpr std::array Buttons{
 
 auto setup_panels() -> void {
     // Setup the main panel that shows pip boy
-    addPanel(0, 1, 0, 0, 0, 0, 0, 0, 1);
-    addControlPictureFromFile(0, 0, 0, 0, "pip_boy.fwi", 1);
-    addControlText(0, 1, 90, 180, 1, 64, WHITE.red, WHITE.green, WHITE.blue, "Press a Button");
-    showPanel(0);
+    addPanel(MAIN_PANEL_INDEX, 1, 0, 0, 0, 0, 0, 0, 1);
+    addControlPictureFromFile(MAIN_PANEL_INDEX, 0, 0, 0, "pip_boy.fwi", 1);
+    addControlText(MAIN_PANEL_INDEX, 1, 90, 180, 1, 64, WHITE.red, WHITE.green, WHITE.blue, "Press a Button");
+    showPanel(MAIN_PANEL_INDEX);
     // Setup the rest of the panels
     for (auto& panel : Panels) {
         addPanel(panel.index, 1, 0, 0, 0, panel.color.red, panel.color.green, panel.color.blue, 1);
@@ -116,7 +119,7 @@ auto process_events() -> void {
                     waitms(33);
                 }
                 // show the main panel
-                showPanel(0);
+                showPanel(MAIN_PANEL_INDEX);
                 break;
             }
         }
@@ -141,6 +144,9 @@ auto process_events() -> void {
 }
 
 auto main() -> int {
+    // Disable automatic handling of Blue and Red buttons
+    setCanDisplayReactToButtons(4);
+
     setup_panels();
 
     show_rainbow_leds(5);

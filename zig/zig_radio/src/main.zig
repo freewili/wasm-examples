@@ -34,12 +34,45 @@ const PanelInfo = struct {
 };
 
 const Panels = [_]PanelInfo{
-    PanelInfo{ .index = 1, .event_type = fw.FWGUI_EVENT_GRAY_BUTTON, .color = GRAY, .text = "GRAY", .sub_fname = "/radio/white.sub" },
-    PanelInfo{ .index = 2, .event_type = fw.FWGUI_EVENT_YELLOW_BUTTON, .color = YELLOW, .text = "YELLOW", .sub_fname = "/radio/yellow.sub" },
-    PanelInfo{ .index = 3, .event_type = fw.FWGUI_EVENT_GREEN_BUTTON, .color = GREEN, .text = "GREEN", .sub_fname = "/radio/green.sub" },
-    PanelInfo{ .index = 4, .event_type = fw.FWGUI_EVENT_BLUE_BUTTON, .color = BLUE, .text = "BLUE", .sub_fname = "/radio/blue.sub" },
-    PanelInfo{ .index = 5, .event_type = fw.FWGUI_EVENT_RED_BUTTON, .color = RED, .text = "RED", .sub_fname = "/radio/red.sub" },
+    PanelInfo{
+        .index = 2,
+        .event_type = fw.FWGUI_EVENT_GRAY_BUTTON,
+        .color = GRAY,
+        .text = "GRAY",
+        .sub_fname = "/radio/white.sub",
+    },
+    PanelInfo{
+        .index = 3,
+        .event_type = fw.FWGUI_EVENT_YELLOW_BUTTON,
+        .color = YELLOW,
+        .text = "YELLOW",
+        .sub_fname = "/radio/yellow.sub",
+    },
+    PanelInfo{
+        .index = 4,
+        .event_type = fw.FWGUI_EVENT_GREEN_BUTTON,
+        .color = GREEN,
+        .text = "GREEN",
+        .sub_fname = "/radio/green.sub",
+    },
+    PanelInfo{
+        .index = 5,
+        .event_type = fw.FWGUI_EVENT_BLUE_BUTTON,
+        .color = BLUE,
+        .text = "BLUE",
+        .sub_fname = "/radio/blue.sub",
+    },
+    PanelInfo{
+        .index = 6,
+        .event_type = fw.FWGUI_EVENT_RED_BUTTON,
+        .color = RED,
+        .text = "RED",
+        .sub_fname = "/radio/red.sub",
+    },
 };
+
+// Main panel index - Start at 1 since 0 is reserved for the event log
+const MAIN_PANEL_INDEX: u8 = 1;
 
 const Buttons = [_]fw.FWGuiEventType{
     fw.FWGUI_EVENT_GRAY_BUTTON,
@@ -51,15 +84,53 @@ const Buttons = [_]fw.FWGuiEventType{
 
 pub fn setup_panels() void {
     // Create a panel to display the image
-    fw.addPanel(0, 1, 0, 0, 0, 0, 0, 0, 1);
+    fw.addPanel(
+        MAIN_PANEL_INDEX,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+    );
     // Add the image to the panel, this file should be in the images directory on the display processor
-    fw.addControlPictureFromFile(0, 0, 0, 0, @ptrCast("pip_boy.fwi"), 1);
+    fw.addControlPictureFromFile(
+        MAIN_PANEL_INDEX,
+        0,
+        0,
+        0,
+        @ptrCast("pip_boy.fwi"),
+        1,
+    );
     // Show the Panel
-    fw.showPanel(0);
+    fw.showPanel(MAIN_PANEL_INDEX);
 
     for (Panels) |panel| {
-        fw.addPanel(panel.index, 1, 0, 0, 0, panel.color.red, panel.color.green, panel.color.blue, 1);
-        fw.addControlText(panel.index, 1, 10, 50, 2, 0, 0, 0, 0, @ptrCast(panel.text));
+        fw.addPanel(
+            panel.index,
+            1,
+            0,
+            0,
+            0,
+            panel.color.red,
+            panel.color.green,
+            panel.color.blue,
+            1,
+        );
+        fw.addControlText(
+            panel.index,
+            1,
+            10,
+            50,
+            2,
+            0,
+            0,
+            0,
+            0,
+            @ptrCast(panel.text),
+        );
     }
 }
 
@@ -83,7 +154,14 @@ pub fn show_rainbow_leds(max_loops: u32) void {
         for (0..NUMBER_OF_LEDS) |led_index| {
             // Pick the color and set it
             const color: Color = Colors[color_choice];
-            fw.setBoardLED(@intCast(led_index), color.red, color.green, color.blue, 300, fw.ledpulsefade);
+            fw.setBoardLED(
+                @intCast(led_index),
+                color.red,
+                color.green,
+                color.blue,
+                300,
+                fw.ledpulsefade,
+            );
             // Make sure we don't overflow the array
             if (color_choice >= Colors.len - 1) {
                 color_choice = 0;
@@ -96,7 +174,12 @@ pub fn show_rainbow_leds(max_loops: u32) void {
 }
 
 pub fn process_events() void {
-    fw.printInt(@ptrCast("\nListening to events...\n"), fw.printColorNormal, fw.printUInt32, 0);
+    fw.printInt(
+        @ptrCast("\nListening to events...\n"),
+        fw.printColorNormal,
+        fw.printUInt32,
+        0,
+    );
     var red_count: u8 = 0;
     while (true) {
         fw.waitms(33);
@@ -105,7 +188,12 @@ pub fn process_events() void {
         }
         var event_data = [_]u8{0} ** fw.FW_GET_EVENT_DATA_MAX;
         const last_event = fw.getEventData(&event_data);
-        fw.printInt(@ptrCast("\nLast event: %d\n"), fw.printColorNormal, fw.printUInt32, last_event);
+        fw.printInt(
+            @ptrCast("\nLast event: %d\n"),
+            fw.printColorNormal,
+            fw.printUInt32,
+            last_event,
+        );
         // We only want to process button presses
         var found: bool = false;
         for (Buttons) |button| {
@@ -119,11 +207,23 @@ pub fn process_events() void {
         }
         for (Panels) |panel| {
             if (panel.event_type == last_event) {
-                fw.printInt(@ptrCast("\nShowing Panel %d...\n"), fw.printColorNormal, fw.printUInt32, panel.index);
+                fw.printInt(
+                    @ptrCast("\nShowing Panel %d...\n"),
+                    fw.printColorNormal,
+                    fw.printUInt32,
+                    panel.index,
+                );
                 fw.showPanel(panel.index);
                 // If we match the event type, show the panel, flash leds and transmit the radio
                 for (0..NUMBER_OF_LEDS) |led_index| {
-                    fw.setBoardLED(@intCast(led_index), panel.color.red, panel.color.green, panel.color.blue, 250, fw.ledpulse);
+                    fw.setBoardLED(
+                        @intCast(led_index),
+                        panel.color.red,
+                        panel.color.green,
+                        panel.color.blue,
+                        250,
+                        fw.ledpulse,
+                    );
                 }
                 _ = fw.RadioTxSubFile(@intCast(1), @ptrCast(panel.sub_fname));
                 // Wait for the radio to stop transmitting
@@ -131,13 +231,18 @@ pub fn process_events() void {
                     fw.waitms(33);
                 }
                 // show the main panel
-                fw.showPanel(0);
+                fw.showPanel(MAIN_PANEL_INDEX);
                 break;
             }
         }
         // we need an exit condition
         if (last_event == fw.FWGUI_EVENT_RED_BUTTON) {
-            fw.printInt("\nLast event was red button: %d\n", fw.printColorNormal, fw.printUInt32, red_count);
+            fw.printInt(
+                "\nLast event was red button: %d\n",
+                fw.printColorNormal,
+                fw.printUInt32,
+                red_count,
+            );
             red_count += 1;
             if (red_count >= 3) {
                 _ = fw.RadioTxSubFile(1, @ptrCast("/radio/off.sub"));
@@ -155,6 +260,9 @@ pub fn process_events() void {
 }
 
 pub export fn main() void {
+    // Disable automatic handling of Blue and Red buttons
+    fw.setCanDisplayReactToButtons(4);
+
     setup_panels();
 
     show_rainbow_leds(5);
