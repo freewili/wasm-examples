@@ -1,0 +1,7 @@
+[package]
+name = "valentines_day_img_animation_ir_audio"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+fwwasm-ffi = {path = "../fwwasm-ffi"}
