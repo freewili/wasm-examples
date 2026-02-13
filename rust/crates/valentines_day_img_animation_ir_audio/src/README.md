@@ -1,10 +1,10 @@
-# Valentine's Day Demo for Free-Wili 🌹❤️
+# Valentine's Day Demo for FREE-WILi 🌹❤️
 
-An interactive Valentine's Day demonstration for the Free-Wili embedded platform, showcasing WASM capabilities with animations, audio, LED effects, and IR communication.
+An interactive Valentine's Day demonstration for the FREE-WILi embedded platform, showcasing WASM capabilities with animations, audio, LED effects, and IR communication.
 
 ## 🎯 What This Demo Does
 
-This demo creates an interactive Valentine's Day experience on the Free-Wili device:
+This demo creates an interactive Valentine's Day experience on the FREE-WILi device:
 
 1. **Start Screen**: Displays a custom Valentine's image (picturestart.fwi)
 2. **Audio Loop**: Continuously plays sound while waiting for user interaction
@@ -16,7 +16,7 @@ This demo creates an interactive Valentine's Day experience on the Free-Wili dev
 
 ## 🛠️ Hardware Requirements
 
-**Free-Wili Device** with:
+**FREE-WILi Device** with:
   - 320x240 color display
   - 7 RGB LEDs
   - Green button
@@ -33,7 +33,7 @@ This demo creates an interactive Valentine's Day experience on the Free-Wili dev
 
 ## 📋 Required Assets
 
-Place these files on your Free-Wili device:
+Place these files on your FREE-WILi device:
 
 picturestart.fwi - Initial Valentine's message/image
 picture1.fwi - Animation frame 1
@@ -61,7 +61,7 @@ target/wasm32-unknown-unknown/release/rust_radio.wasm
 
 ## 🚀 Usage
 
-1. Load the valentines_day.wasm file onto your Free-Wili device
+1. Load the valentines_day.wasm file onto your FREE-WILi device
 2. Ensure all .fwi image files are present on the device
 3. Run the WASM application
 4. The start image will display with looping audio
@@ -91,7 +91,7 @@ Total pattern duration: ~500ms
 
 ## 🎵 Audio
 
-Uses the built-in Free-Wili ROM sound: 
+Uses the built-in FREE-WILi ROM sound: 
 Plays during waiting screen
 Continues playing throughout the animation loop
 
@@ -100,10 +100,10 @@ Continues playing throughout the animation loop
 **Language**: Rust (edition 2021)
 **Target**: wasm32-unknown-unknown
 **Entry Point**: extern "C" fn _start()
-**FFI Library**: fwwasm-ffi for Free-Wili hardware bindings
+**FFI Library**: fwwasm-ffi for FREE-WILi hardware bindings
 **Memory**: No heap allocation (no_std)
 **Display Resolution**: 320x240 pixels
-**Image Format**: .fwi (Free-Wili Image format)
+**Image Format**: .fwi (FREE-WILi Image format)
 
 ## 📁 Project Structure
 
@@ -124,13 +124,13 @@ Implement different IR code sequences
 
 ## 📄 License
 
-This is an example/demo project for the Free-Wili platform. Use and modify as you wish!
+This is an example/demo project for the FREE-WILi platform. Use and modify as you wish!
 
 ## 💝 Perfect For
 
 Valentine's Day celebrations
 Learning embedded Rust + WASM
-Demonstrating Free-Wili capabilities
+Demonstrating FREE-WILi capabilities
 Creating interactive gift experiences
 Teaching event-driven programming
 
