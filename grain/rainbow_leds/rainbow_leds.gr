@@ -1,0 +1,91 @@
+// grain 0.7.1
+// grain compile rainbow_leds.gr --no-gc --release --elide-type-info --no-bulk-memory --initial-memory-pages=1 --maximum-memory-pages=1
+module RainbowLeds
+
+// Define print color enum
+enum PrintOutColor {
+  PrintColorNormal,
+  PrintColorBlack,
+  PrintColorBlue,
+  PrintColorGreen,
+  PrintColorCyan,
+  PrintColorRed,
+  PrintColorPurple,
+  PrintColorBrown,
+  PrintColorYellow,
+  PrintColorWhite,
+}
+
+enum PrintOutDataType {
+    PrintInt32,
+    PrintUInt32,
+    PrintInt16,
+    PrintUInt16,
+    PrintUint8,
+    PrintInt8,
+    PrintChar,
+    PrintBool,
+}
+
+enum LEDManagerLEDMode {
+    LedSimpleValue,
+    LedFlash,
+    LedPulse,
+    LedFlashFade,
+    LedPulseFade,
+}
+
+// Import WASM functions
+foreign wasm setBoardLED: (Number, Number, Number, Number, Number, LEDManagerLEDMode) => Void from "wiliwasm"
+foreign wasm waitms: (Number) => Void from "wiliwasm"
+foreign wasm exitToMainAppMenu: () => Void from "wiliwasm"
+// void printInt(const char* szFormatSpec, printOutColor iColor, printOutDataType iDataType, int iDataValue) WASM_IMPORT("printInt");
+foreign wasm printInt: (String, PrintOutColor, PrintOutDataType, Number) => Void from "wiliwasm"
+
+record Color {
+    r: Number,
+    g: Number,
+    b: Number,
+}
+
+let main = () => {
+    printInt("Hello from Grain!\n", PrintColorNormal, PrintInt32, 0)
+    
+    let numberOfLeds = 7
+
+    let redColor = { r: 255, g: 0, b: 0 }
+    let orangeColor = { r: 255, g: 165, b: 0 }
+    let yellowColor = { r: 255, g: 255, b: 0 }
+    let greenColor = { r: 0, g: 255, b: 0 }
+    let blueColor = { r: 0, g: 0, b: 255 }
+    let indigoColor = { r: 75, g: 0, b: 130 }
+    let violetColor = { r: 238, g: 130, b: 238 }
+
+    // Helper function to get color by index (no heap allocation)
+    let getColorByIndex = (index) => {
+        let colorIndex = index % 7
+        if (colorIndex == 0) redColor
+        else if (colorIndex == 1) orangeColor
+        else if (colorIndex == 2) yellowColor
+        else if (colorIndex == 3) greenColor
+        else if (colorIndex == 4) blueColor
+        else if (colorIndex == 5) indigoColor
+        else violetColor
+    }
+
+    // Example: Set each LED to a different color
+    let mut ledIndex = 0
+    let mut loop = 0
+    while (loop < 10) {
+        while (ledIndex < numberOfLeds) {
+            let color = getColorByIndex(ledIndex)
+            setBoardLED(ledIndex, color.r, color.g, color.b, 500, LedPulseFade)
+            ledIndex += 1
+            waitms(50)
+        }
+        loop += 1
+        waitms(100)
+    }
+
+    exitToMainAppMenu()
+}

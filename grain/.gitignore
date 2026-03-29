@@ -1,0 +1,41 @@
+# Grain compiled outputs
+**/*.wasm
+**/*.wat
+**/*.js
+**/*.map
+
+# Grain build artifacts
+**/build/
+**/dist/
+**/target/
+
+# Grain cache and temporary files
+**/.grain/
+**/.grain-cache/
+**/grain-stdlib/
+
+# Node.js dependencies (if using WASI polyfills)
+**/node_modules/
+**/package-lock.json
+**/yarn.lock
+
+# IDE and editor files
+**/.vscode/
+**/.idea/
+**/*.swp
+**/*.swo
+**/*~
+
+# OS generated files
+**/.DS_Store
+**/.DS_Store?
+**/._*
+**/.Spotlight-V100
+**/.Trashes
+**/ehthumbs.db
+**/Thumbs.db
+
+# Backup and temporary files
+**/*.bak
+**/*.tmp
+**/*.temp
